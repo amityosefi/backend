@@ -11,7 +11,7 @@ Make sure you have [Node.js](http://nodejs.org/) installed.
 4. run ```node app.js```
 
 
-Your app should now be running on [localhost:3000](http://localhost:3000/).
+Your app should now be running on [localhost:3001](http://localhost:3001/).
 
 ### examples
 
