@@ -1,0 +1,36 @@
+
+post http://localhost:3000/converter
+Content-Type: application/json
+
+{
+    "url": "https://github.com/"
+}
+
+###
+
+post http://localhost:3000/converter
+Content-Type: application/json
+
+{
+    "url": "https://one.co.il/"
+}
+
+###
+
+post http://localhost:3000/converter
+Content-Type: application/json
+
+{
+    "url": "https://google.com/"
+}
+
+###
+
+post http://localhost:3000/converter
+Content-Type: application/json
+
+{
+    "url": "https://walla.co.il/"
+}
+
+
