@@ -1,36 +1,37 @@
 
-post http://localhost:3000/converter
-Content-Type: application/json
-
-{
-    "url": "https://github.com/"
-}
+get http://localhost:3001/
 
 ###
 
-post http://localhost:3000/converter
-Content-Type: application/json
-
-{
-    "url": "https://one.co.il/"
-}
+get http://localhost:3001/images/5
 
 ###
 
-post http://localhost:3000/converter
-Content-Type: application/json
-
-{
-    "url": "https://google.com/"
-}
+get http://localhost:3001/images/6
 
 ###
 
-post http://localhost:3000/converter
-Content-Type: application/json
+get http://localhost:3001/images/8
 
-{
-    "url": "https://walla.co.il/"
-}
+###
+
+get http://localhost:3001/images/sdfsdf
+
+###
+
+get http://localhost:3001/images/"sdfsdf"
+
+###
+
+get http://localhost:3001/images/""
+
+###
+
+get http://localhost:3001/images
+
+###
 
 
+get http://localhost:3001/33
+
+###
