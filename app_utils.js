@@ -1,7 +1,9 @@
 const path = require("path");
+const db_utils = require("./db_utils")
 
 async function getImages(number) {
-    //fill the function
+    const imgs = await db_utils.getTopImgs(number);
+    return imgs;
 }
 
 exports.getImages = getImages;
