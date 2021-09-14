@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app_utils = require("./app_utils");
-const db_utils = require("./db_utils")
+// const db_utils = require("./db_utils")
 var path = require("path");
 const session = require("client-sessions");
 var logger = require("morgan");
@@ -43,11 +43,29 @@ app.get('/images/:number', async function(req, res) {
     res.status(500).send({message: new Error(err)});
   }
 });
+
+app.get('/images/:topics/:numbers', async function(req, res) {
+  try {
+    const topics = req.params.topics;
+    const numbers = req.params.numbers;
+
+    if (!topics || isNaN(numbers) || topics >= 8) {
+      res.status(400).send({ message: 'Wrong inputs' });
+    }
+    const ans = await app_utils.getAllPictures(topics, numbers);
+    res.status(200).send(ans);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
 app.post('/images/timestamp', async function(req, res) {
   try {
     let diff = req.body.diff;
     let url = req.body.PicURL;
-    await db_utils.SubmitTimeDiff(diff,url);
+    // await db_utils.SubmitTimeDiff(diff,url);
     res.status(200).send("added successfully");
 
   } catch (err) {
@@ -55,6 +73,8 @@ app.post('/images/timestamp', async function(req, res) {
     res.status(500).send({message: new Error(err)});
   }
 });
+
+
 
 const port = process.env.PORT || 3001;
 
