@@ -49,7 +49,7 @@ app.get('/images/:topics/:numbers', async function(req, res) {
     const topics = req.params.topics;
     const numbers = req.params.numbers;
 
-    if (!topics || isNaN(numbers) || topics >= 8) {
+    if (!topics || isNaN(numbers) || topics > 8) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
     const ans = await app_utils.getAllPictures(topics, numbers);
