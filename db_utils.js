@@ -5,7 +5,7 @@ const config = {
   server: process.env.tedious_server,
   database: process.env.tedious_database,
   driver:'msnodesqlv8',
-  options: {
+  options: { //dsafasdf
     enableArithAbort: true
   }
 };
