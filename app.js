@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app_utils = require("./app_utils");
-// const db_utils = require("./db_utils")
+const db_utils = require("./db_utils");
 var path = require("path");
 const session = require("client-sessions");
 var logger = require("morgan");
@@ -28,6 +28,46 @@ const corsConfig = {
 
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
+
+
+
+app.post('/login', async function(req, res) {
+
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
+    if (!username || !(password)) {
+      res.status(400).send({ message: 'Wrong inputs' });
+    }
+    const ans = await app_utils.getDBs(username, password);
+    // const ans = await db_utils.getDB(username, password);
+    res.status(200).send(ans);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
+// app.post('/check', async function(req, res) {
+//
+//   try {
+//     const username = req.body.username;
+//     const password = req.body.password;
+//     if (!username || !(password)) {
+//       res.status(400).send({ message: 'Wrong inputs' });
+//     }
+//     const ans = await db_utils.getDB(username, password);
+//     res.status(200).send(ans);
+//
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send({message: new Error(err)});
+//   }
+// });
+
+
+
 
 app.get('/images/:number', async function(req, res) {
   try {
@@ -76,11 +116,24 @@ app.post('/images/timestamp', async function(req, res) {
 
 
 
-const port = process.env.PORT || 3001;
+const port = '8110';
+const host = '0.0.0.0'
 
-app.listen(port, function() {
-    console.log(`App started listen on port ${port}`);
+const server = app.listen(port, host, function (err) {
+  if (err) {
+    console.log(err)
+    return
+  }
+  console.log('Listening at ' + host + ":" + port + '\n')
+})
+
+process.on("SIGINT", function () {
+  if (server) {
+    server.close(() => console.log("server closed"));
+  }
+  process.exit();
 });
+
 
 module.exports = app
 
