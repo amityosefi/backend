@@ -34,14 +34,7 @@ async function getAllPictures(topics, numbers){
     return {urls: merged};
 }
 
-async function getDBs(username, password){
-    const query = `SElECT * FROM dbo.users WHERE username = '${username}' and password = '${password}'`;
-    console.log(query);
-    const params = await db_utils.execQuery(query);
-    return params;
-}
 
-exports.getDBs = getDBs;
 exports.getAllPictures = getAllPictures;
 exports.getRandomTopics = getRandomTopics;
 exports.getRandomPictures = getRandomPictures;
