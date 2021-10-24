@@ -27,6 +27,7 @@ const corsConfig = {
   
 };
 
+
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
@@ -34,6 +35,10 @@ const port = '8110';
 const host = '0.0.0.0'
 
 const auth = require("./routes/auth");
+const images = require("./routes/images");
+
+app.use("/images", images);
+app.use(auth);
 // const pictures = require("./routes/pictures");
 
 
@@ -45,23 +50,6 @@ const auth = require("./routes/auth");
 //       res.status(400).send({ message: 'Wrong inputs' });
 //     }
 //     const ans = await app_utils.getImages(number);
-//     res.status(200).send(ans);
-
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send({message: new Error(err)});
-//   }
-// });
-
-// app.get('/images/:topics/:numbers', async function(req, res) {
-//   try {
-//     const topics = req.params.topics;
-//     const numbers = req.params.numbers;
-
-//     if (!topics || isNaN(numbers) || topics >= 8) {
-//       res.status(400).send({ message: 'Wrong inputs' });
-//     }
-//     const ans = await app_utils.getAllPictures(topics, numbers);
 //     res.status(200).send(ans);
 
 //   } catch (err) {

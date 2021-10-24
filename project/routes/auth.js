@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const db_utils = require("./utils/db_utils");
 const auth_utils = require("./utils/auth_utils");
 // const bcrypt = require("bcryptjs");
 let CURRENT_USERNAME = "";
