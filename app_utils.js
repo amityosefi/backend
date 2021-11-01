@@ -3,8 +3,6 @@ const topic_names = ['Animals', 'Beaches', 'Big Cities', 'Light Houses', 'Mounta
 async function getRandomTopics(topics, numbers) {
     let res = [];
     let arr = [];
-    res.push(topics);
-    res.push(numbers);
     while(topics > 0){
         let rand = Math.floor(Math.random() * 8); // 8 is the number of topics right now
         if(arr.includes(rand))

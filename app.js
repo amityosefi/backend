@@ -76,10 +76,12 @@ app.post('/images/timestamp', async function(req, res) {
 
 
 
+
 const port = process.env.PORT || 3001;
 
 app.listen(port, function() {
     console.log(`App started listen on port ${port}`);
+    
 });
 
 module.exports = app
