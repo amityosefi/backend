@@ -31,7 +31,7 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
-const port = '8110';
+const port = '443';
 const host = '0.0.0.0'
 
 const auth = require("./routes/auth");

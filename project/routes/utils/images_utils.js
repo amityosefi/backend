@@ -47,7 +47,6 @@ async function getAllPictures(categories, numbers){
     for(let i=0; i< selected_categories.length; i++){
         const sql_query = await db_utils.execQuery(`select Url from dbo.images where Category = '${selected_categories[i]}'`);
         const url_pictures = await getRandomPictures(sql_query, numbers);
-        // all_url_pictures = extend({}, all_url_pictures, url_pictures);
         all_url_pictures.push(url_pictures);
         
     }

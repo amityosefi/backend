@@ -1,41 +1,46 @@
 const express = require("express");
 const router = express.Router();
 const auth_utils = require("./utils/auth_utils");
+const db_utils = require("./utils/db_utils");
 // const bcrypt = require("bcryptjs");
 let CURRENT_USERNAME = "";
 
 
-// router.post("/register", async (req, res, next) => {
-//   try {
-//     // parameters exists
-//     // valid parameters
-//     // username exists
-//     const users = await DButils.execQuery(
-//       "SELECT username FROM dbo.users"
-//     );
+router.post("/register", async (req, res, next) => {
+  try {
+    // parameters exists
+    // valid parameters
+    // username exists
+    console.log("Reg");
+    // const users = await db_utils.execQuery(
+    //   "SELECT Email FROM dbo.users"
+    // );
 
-//     if (users.find((x) => x.username === req.body.username))
-//       throw { status: 409, message: "Username taken" };
+    // if (users.find((x) => x.Email === req.body.Email))
+    //   throw { status: 409, message: "Email taken" };
 
-//     //hash the password
-//     let hash_password = bcrypt.hashSync(
-//       req.body.password,
-//       parseInt(process.env.bcrypt_saltRounds)
-//     );
-//     req.body.password = hash_password;
+    //hash the password
+    // let hash_password = bcrypt.hashSync(
+    //   req.body.Password,
+    //   parseInt(process.env.bcrypt_saltRounds)
+    // );
+    // req.body.Password = hash_password;
 
-//     // add the new username
-//     await DButils.execQuery(
-//       `INSERT INTO dbo.users (username, password, email, firstname, lastname, country, img) VALUES ('${req.body.username}', '${hash_password}','${req.body.email}', '${req.body.firstname}','${req.body.lastname}','${req.body.country}','${req.body.imageUrl}')`
-//     );
+    console.log(req.body.Gender);
+    console.log(req.body.Age);
 
-//     req.session.lastSearch = null;
+    // add the new username
+    await db_utils.execQuery(
+      `INSERT INTO dbo.users (Email, Password, FirstName, LastName, Gender, Age) VALUES ('${req.body.Email}', '${req.body.Password}','${req.body.FirstName}', '${req.body.LastName}','${req.body.Gender}','${req.body.Age}''`
+    );
 
-//     res.status(201).send("user created");
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+    //req.session.lastSearch = null;
+
+    res.status(201).send("user created");
+  } catch (error) {
+    next(error);
+ }
+}); 
 
 router.post('/login', async function(req, res) {
 
