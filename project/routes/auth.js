@@ -31,14 +31,19 @@ router.post("/register", async (req, res, next) => {
     // if (users.find((x) => x.Email === req.body.Email))
     //   throw { status: 409, message: "Email taken" };
 
-
+    console.log(req.body.Email);
+    console.log(req.body.Password);
+    console.log(req.body.FirstName);
+    console.log(req.body.LastName);
+    console.log(req.body.Gender);
+    console.log(req.body.Age);
     if(!req.body.Email || !req.body.Password || !req.body.FirstName || !req.body.LastName || !req.body.Gender || !req.body.Age){
       res.status(400).send({message: "Wrong inputs"});
     }
     
-    const checkUser = await auth_utils.checkUserPassword(req.body.Email);
+    const checkUser = await auth_utils.checkEmailExistence(req.body.Email);
     if(checkUser > 0)
-      res.status(200).send({message: "There is already Email and password"});
+      res.status(200).send({message: "There is already Email"});
     else{
       // hash the password
     let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
@@ -59,9 +64,9 @@ router.post('/login', async function(req, res) {
     if (!Email || !Password) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
-    const ans = await auth_utils.checkUserDetails(Email);
+    const ans = await auth_utils.checkUserPassword(Email);
     if(ans && bcrypt.compareSync(req.body.Password, ans)){
-      req.session.user_id = user.user_id;
+      req.session.user_id = Email;
       res.status(200).send({message: "Login Successfully"});
     }
     else
@@ -99,8 +104,7 @@ router.post('/login', async function(req, res) {
 //   }
 // });
 
-router.post("/Logout", function (req, res) {
-  
+router.post("/logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
 });
