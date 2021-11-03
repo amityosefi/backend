@@ -2,16 +2,28 @@ const express = require("express");
 const router = express.Router();
 const auth_utils = require("./utils/auth_utils");
 const db_utils = require("./utils/db_utils");
-// const bcrypt = require("bcryptjs");
-let CURRENT_USERNAME = "";
+const bcrypt = require("bcrypt");
+
+
+// router.use(async function (req, res, next) {
+//   if (req.session && req.session.user_id) {
+//     DButils.execQuery("SELECT user_id FROM users")
+//       .then((users) => {
+//         if (users.find((x) => x.user_id === req.session.user_id)) {
+//           req.user_id = req.session.user_id;
+//           next();
+//         }
+//       })
+//       .catch((err) => next(err));
+//   } else {
+//     res.sendStatus(401);
+//   }
+// });
 
 
 router.post("/register", async (req, res, next) => {
   try {
-    // parameters exists
-    // valid parameters
-    // username exists
-    console.log("Reg");
+
     // const users = await db_utils.execQuery(
     //   "SELECT Email FROM dbo.users"
     // );
@@ -19,24 +31,26 @@ router.post("/register", async (req, res, next) => {
     // if (users.find((x) => x.Email === req.body.Email))
     //   throw { status: 409, message: "Email taken" };
 
-    //hash the password
-    // let hash_password = bcrypt.hashSync(
-    //   req.body.Password,
-    //   parseInt(process.env.bcrypt_saltRounds)
-    // );
-    // req.body.Password = hash_password;
-
+    console.log(req.body.Email);
+    console.log(req.body.Password);
+    console.log(req.body.FirstName);
+    console.log(req.body.LastName);
     console.log(req.body.Gender);
     console.log(req.body.Age);
-
-    // add the new username
-    await db_utils.execQuery(
-      `INSERT INTO dbo.users (Email, Password, FirstName, LastName, Gender, Age) VALUES ('${req.body.Email}', '${req.body.Password}','${req.body.FirstName}', '${req.body.LastName}','${req.body.Gender}','${req.body.Age}''`
-    );
-
-    //req.session.lastSearch = null;
-
-    res.status(201).send("user created");
+    if(!req.body.Email || !req.body.Password || !req.body.FirstName || !req.body.LastName || !req.body.Gender || !req.body.Age){
+      res.status(400).send({message: "Wrong inputs"});
+    }
+    
+    const checkUser = await auth_utils.checkEmailExistence(req.body.Email);
+    if(checkUser > 0)
+      res.status(200).send({message: "There is already Email"});
+    else{
+      // hash the password
+    let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
+      req.body.Password = hash_password;
+      const ans = await auth_utils.insertNewUser(req.body.Email, req.body.Password, req.body.FirstName, req.body.LastName, req.body.Gender, req.body.Age);
+      res.status(201).send(ans);
+    }
   } catch (error) {
     next(error);
  }
@@ -45,14 +59,18 @@ router.post("/register", async (req, res, next) => {
 router.post('/login', async function(req, res) {
 
   try {
-    const username = req.body.username;
-    const password = req.body.password;
-    if (!username || !(password)) {
+    const Email = req.body.Email;
+    let Password = req.body.Password;
+    if (!Email || !Password) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
-    const ans = await auth_utils.getUserDetails(username, password);
-    res.status(200).send(ans);
-
+    const ans = await auth_utils.checkUserPassword(Email);
+    if(ans && bcrypt.compareSync(req.body.Password, ans)){
+      req.session.user_id = Email;
+      res.status(200).send({message: "Login Successfully"});
+    }
+    else
+      res.status(200).send({message: "There is no Email or password"});
   } catch (err) {
     console.log(err);
     res.status(500).send({message: new Error(err)});
@@ -86,7 +104,7 @@ router.post('/login', async function(req, res) {
 //   }
 // });
 
-router.post("/Logout", function (req, res) {
+router.post("/logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
 });

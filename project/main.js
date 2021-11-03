@@ -11,6 +11,31 @@ var cors = require("cors");
 const app = express();
 app.use(bodyParser.json());
 
+
+app.use(logger("dev")); //logger
+app.use(express.json()); // parse application/json
+app.use(
+  session({
+    cookieName: "session", // the cookie key name
+    secret: 'ShaharDanielAmit', // the encryption key
+    duration: 24 * 60 * 60 * 1000, // expired after 20 sec
+    activeDuration: 1000 * 60 * 5, // if expiresIn < activeDuration,
+    cookie: {
+      httpOnly: false,
+    },
+    //the session will be extended by activeDuration milliseconds
+  })
+);
+app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
+app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
+
+// middleware to serve all the needed static files under the dist directory - loaded from the index.html file
+// https://expressjs.com/en/starter/static-files.html
+app.use(express.static("dist"));
+
+
+
+
 app.get('/', async function(req, res) {
   res.status(200).send("server is running");
 });
@@ -39,37 +64,6 @@ const images = require("./routes/images");
 
 app.use("/images", images);
 app.use(auth);
-// const pictures = require("./routes/pictures");
-
-
-
-// app.get('/images/:number', async function(req, res) {
-//   try {
-//     const number = req.params.number;
-//     if (!number || isNaN(number)) {
-//       res.status(400).send({ message: 'Wrong inputs' });
-//     }
-//     const ans = await app_utils.getImages(number);
-//     res.status(200).send(ans);
-
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send({message: new Error(err)});
-//   }
-// });
-
-// app.post('/images/timestamp', async function(req, res) {
-//   try {
-//     let diff = req.body.diff;
-//     let url = req.body.PicURL;
-//     // await db_utils.SubmitTimeDiff(diff,url);
-//     res.status(200).send("added successfully");
-
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send({message: new Error(err)});
-//   }
-// });
 
 
 const server = app.listen(port, host, function (err) {

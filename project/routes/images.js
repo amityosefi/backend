@@ -3,7 +3,6 @@ const router = express.Router();
 const images_utils = require("./utils/images_utils");
 
 
-
 router.get('/getImages/:category/:numbers', async function(req, res) {
   try {
     const category = req.params.category;
