@@ -77,32 +77,6 @@ router.post('/login', async function(req, res) {
   }
 });
 
-// router.post("/Login", async (req, res, next) => {
-  
-//   try {
-//     const user = (
-//       await DButils.execQuery(
-//         `SELECT * FROM dbo.users WHERE username = '${req.body.username}'`
-//       )
-//     )[0];
-
-//     // check that username exists & the password is correct
-//     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
-//       throw { status: 401, message: "Username or Password incorrect" };
-//     }
-
-//     // Set cookie
-//     req.session.user_id = user.user_id;
-//     req.session.lastSearch = null;
-
-//     CURRENT_USERNAME = req.body.username;
-    
-//     // return cookie
-//     res.status(200).send({ success: true, message: "login succeeded" });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 router.post("/logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
