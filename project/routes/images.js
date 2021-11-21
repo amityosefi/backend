@@ -9,19 +9,20 @@ const images_utils = require("./utils/images_utils");
 // import imagemin from 'imagemin';
 // import imageminJpegtran from 'imagemin-jpegtran';
 // import imageminPngquant from 'imagemin-pngquant';
-
+const db_utils = require("./utils/db_utils");
 //const fs = require('fs');
 const resizeImg = require('resize-image-buffer');
 let decode = require('image-decode')
 let encode = require('image-encode')
 const imageToBase64 = require('image-to-base64');
-
+var fs = require('fs');
+var LZUTF8 = require('lzutf8');
 const Jimp = require("jimp");
-const fs = require("fs");
+
 const path = require('path');
 
 const zlib = require('zlib');
-
+var FileReader = require('filereader');
 
 
 
@@ -49,9 +50,31 @@ router.get('/getImages/:category/:numbers', async function(req, res) {
 router.get('/checkCompress', async function(req, res) {
 
   try {
+    
+    
+    var folder = 'D:\\Daniel\\School\\7th semester\\Project\\Animals\\';
+    var files = fs.readdirSync(folder);
 
-    const data = "C:\\Users\\user\\Desktop\\newBackend\\project\\routes\\AAD05s7.jpg";
-
+    for(var i = 0 ; i < files.length ; i++)
+    {
+      // console.log(files[i]);
+      
+      var images = fs.readdirSync(folder+files[i]+"\\");
+      for(var j = 0 ; j < images.length ; j++)
+      {
+        var path = folder+files[i]+"\\"+images[j];
+        await db_utils.execQuery(`insert into dbo.Images(Url,Nature,Day,Urban,Wildlife,Space,Sunset,Beach,Category) values ('${path}',0,0,0,0,0,0,0,'${files[i]}')`);
+      }
+    }
+    // for(var i = 0 ; i < files.length ; i++)
+    // {
+    //   let data = folder+'Animals\\'+files[i];
+      
+    //   
+      
+        
+    // }
+    
     // const gzip = zlib.createGzip();
 
     // const inp = fs.createReadStream(data);
@@ -73,7 +96,7 @@ router.get('/checkCompress', async function(req, res) {
     
 
 
-    const base64 = fs.readFileSync(data, "base64");
+    // const base64 = fs.readFileSync(data, "base64");
     // console.log(base64);
     // console.log("stop");
     //Convert base64 to buffer => <Buffer ff d8 ff db 00 43 00 ...
@@ -81,7 +104,7 @@ router.get('/checkCompress', async function(req, res) {
 
     // fs.writeFileSync("new-path.jpg", buffer);
 
-    res.status(200).send(base64);
+    res.status(200).send(files);
 
   } catch (err) {
     console.log(err);

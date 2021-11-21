@@ -1,7 +1,7 @@
 const db_utils = require("./db_utils");
 
 const topic_names = ['Animals', 'Beaches', 'Big Cities', 'Light Houses', 'Mountains', 'Other', 'Sunsets', 'Universe'];
-
+var fs = require('fs');
 
 async function getRandomcategories(categories) {
     let arr = [];
@@ -47,11 +47,21 @@ async function getAllPictures(categories, numbers){
     for(let i=0; i< selected_categories.length; i++){
         const sql_query = await db_utils.execQuery(`select Url from dbo.images where Category = '${selected_categories[i]}'`);
         const url_pictures = await getRandomPictures(sql_query, numbers);
+        
         all_url_pictures.push(url_pictures);
         
     }
     const mergedArrays = [].concat.apply([], all_url_pictures);
-    return {urls: mergedArrays};
+    let returnArr = [];
+    mergedArrays.map((path)=>
+    {
+        
+        // let base64 =  fs.readFileSync(path,'base64');
+        let base64 =  fs.readFileSync(path,'base64');
+        
+        returnArr.push(base64);
+    });
+    return {urls: returnArr};
 }
 
 // exports.getRandomcategories = getRandomcategories;
