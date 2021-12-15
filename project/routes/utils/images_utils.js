@@ -64,6 +64,19 @@ async function getAllPictures(categories, numbers){
     return {urls: returnArr};
 }
 
-// exports.getRandomcategories = getRandomcategories;
-exports.getAllPictures = getAllPictures;
+async function insertRatings(user_id, pict_ratings){
+    if (pict_ratings.length >= 4) { // 72
+        for(let i=0; i< pict_ratings.length; i++){
+            const sql_query = await db_utils.execQuery(`INSERT INTO dbo.users_ratings (User_id, Pic_id, rating)
+            VALUES ('${user_id}', '${pict_ratings[0]}', '${pict_ratings[1]}');`);
+    }
+    return "Insert success";
+    }
+    return "Insert fail";
+}
+
+
 // exports.getRandomPictures = getRandomPictures;
+// exports.getRandomcategories = getRandomcategories;
+exports.insertRatings = insertRatings;
+exports.getAllPictures = getAllPictures;
