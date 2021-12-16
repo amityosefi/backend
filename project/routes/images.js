@@ -25,7 +25,23 @@ const zlib = require('zlib');
 var FileReader = require('filereader');
 
 
-
+/**
+ * Authenticate all incoming requests by middleware
+ */
+//  router.use(async function (req, res, next) {
+//   if (req.session && req.session.user_id) {
+//     DButils.execQuery("SELECT user_id FROM users")
+//       .then((users) => {
+//         if (users.find((x) => x.user_id === req.session.user_id)) {
+//           req.user_id = req.session.user_id;
+//           next();
+//         }
+//       })
+//       .catch((err) => next(err));
+//   } else {
+//     res.sendStatus(401);
+//   }
+// });
 
 
 
@@ -110,6 +126,19 @@ router.get('/checkCompress', async function(req, res) {
     console.log(err);
     res.status(500).send({message: new Error(err)});
   }
+});
+
+router.post('/submitRatings', async function(req, res) {
+  try {
+    // const user_id = req.session.user_id;
+    const pict_ratings = req.body.data_ratings;
+    console.log(pict_ratings);
+    const ans = await images_utils.insertRatings(user_id, pict_ratings);
+    res.status(200).send(ans);
+} catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+}
 });
 
 module.exports = router;
