@@ -23,7 +23,7 @@ async function getRandomPictures(sql_query, numbers) {
     while(numbers > 0){
         let r = Math.floor(Math.random() * max);
         if(!arr.includes(sql_query[r])){
-            arr.push(sql_query[r].Url);
+            arr.push(sql_query[r].Id, sql_query[r].Url);
             numbers--;
         }
     }
@@ -45,7 +45,7 @@ async function getAllPictures(categories, numbers){
     let full_details;
     const selected_categories = await getRandomcategories(categories);
     for(let i=0; i< selected_categories.length; i++){
-        const sql_query = await db_utils.execQuery(`select Url from dbo.images where Category = '${selected_categories[i]}'`);
+        const sql_query = await db_utils.execQuery(`select Id, Url from dbo.images where Category = '${selected_categories[i]}'`);
         const url_pictures = await getRandomPictures(sql_query, numbers);
         
         all_url_pictures.push(url_pictures);
@@ -53,13 +53,22 @@ async function getAllPictures(categories, numbers){
     }
     const mergedArrays = [].concat.apply([], all_url_pictures);
     let returnArr = [];
+    let tmp = { id: 0 , url: ""};
     mergedArrays.map((path)=>
     {
-        
+        // let base64 = path;
+        if(isNaN(path)){ 
+            console.log(path);
         // let base64 =  fs.readFileSync(path,'base64');
-        let base64 =  fs.readFileSync(path,'base64');
+            let base64 = fs.readFileSync(path,'base64');
+            tmp.url = base64;
+            returnArr.push(tmp);
+        }
+        else{
+            let tmp = { id: 0 , url: ""};
+            tmp.id = path;
+        }
         
-        returnArr.push(base64);
     });
     return {urls: returnArr};
 }
