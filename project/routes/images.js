@@ -68,20 +68,20 @@ router.get('/checkCompress', async function(req, res) {
   try {
     
     
-    // var folder = 'D:\\Daniel\\School\\7th semester\\Project\\Animals\\';
-    // var files = fs.readdirSync(folder);
+    var folder = 'D:\\Daniel\\School\\7th semester\\Project\\Animals\\';
+    var files = fs.readdirSync(folder);
 
-    // for(var i = 0 ; i < files.length ; i++)
-    // {
-    //   // console.log(files[i]);
+    for(var i = 0 ; i < files.length ; i++)
+    {
+      // console.log(files[i]);
       
-    //   var images = fs.readdirSync(folder+files[i]+"\\");
-    //   for(var j = 0 ; j < images.length ; j++)
-    //   {
-    //     var path = folder+files[i]+"\\"+images[j];
-    //     await db_utils.execQuery(`insert into dbo.Images(Url,Nature,Day,Urban,Wildlife,Space,Sunset,Beach,Category) values ('${path}',0,0,0,0,0,0,0,'${files[i]}')`);
-    //   }
-    // }
+      var images = fs.readdirSync(folder+files[i]+"\\");
+      for(var j = 0 ; j < images.length ; j++)
+      {
+        var path = folder+files[i]+"\\"+images[j];
+        await db_utils.execQuery(`insert into dbo.Images(Url,Nature,Day,Urban,Wildlife,Space,Sunset,Beach,Category) values ('${path}',0,0,0,0,0,0,0,'${files[i]}')`);
+      }
+    }
     // for(var i = 0 ; i < files.length ; i++)
     // {
     //   let data = folder+'Animals\\'+files[i];
@@ -120,25 +120,25 @@ router.get('/checkCompress', async function(req, res) {
 
     // fs.writeFileSync("new-path.jpg", buffer);
     
-    for(var i = 1; i <= 72; i++)
-    {
-      let picId = Math.floor(Math.random()*250)+1001;
-      await db_utils.execQuery(`insert into [dbo].[user_rating](uid,Picid,rating) values(1,${picId},6)`);
+    // for(var i = 1; i <= 72; i++)
+    // {
+    //   let picId = Math.floor(Math.random()*250)+1001;
+    //   await db_utils.execQuery(`insert into [dbo].[user_rating](uid,Picid,rating) values(1,${picId},6)`);
     
-    }
-    for(var i = 1; i <= 72; i++)
-    {
-      let picId = Math.floor(Math.random()*250)+1001;     
+    // }
+    // for(var i = 1; i <= 72; i++)
+    // {
+    //   let picId = Math.floor(Math.random()*250)+1001;     
      
-      await db_utils.execQuery(`insert into [dbo].[user_rating](uid,Picid,rating) values(4,${picId},8)`);
+    //   await db_utils.execQuery(`insert into [dbo].[user_rating](uid,Picid,rating) values(4,${picId},8)`);
      
-    }
-    for(var i = 1; i <= 72; i++)
-    {
-      let picId = Math.floor(Math.random()*250)+1001;
-      let rand_rate = Math.floor(Math.random()*10)+1;
-      await db_utils.execQuery(`insert into [dbo].[user_rating](uid,Picid,rating) values(5,${picId},${rand_rate})`);
-    }
+    // }
+    // for(var i = 1; i <= 72; i++)
+    // {
+    //   let picId = Math.floor(Math.random()*250)+1001;
+    //   let rand_rate = Math.floor(Math.random()*10)+1;
+    //   await db_utils.execQuery(`insert into [dbo].[user_rating](uid,Picid,rating) values(5,${picId},${rand_rate})`);
+    // }
 
     res.status(200).send(files);
 
