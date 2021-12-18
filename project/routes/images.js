@@ -161,4 +161,45 @@ router.post('/submitRatings', async function(req, res) {
 }
 });
 
+router.get('/getSecondGameImages', async function(req, res){
+  try {
+    // const user_id = req.session.user_id;
+    const user_id = 2;
+
+    const ans = await images_utils.getSecondGameImages(user_id);
+    res.status(200).send(ans);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
+
+router.get('/amitCheck', async function(req, res) {
+
+  try {
+
+    let random_numbers_for_pics = [];
+    for(var j = 0 ; j < 75 ; j++)
+    {
+      let random_num = Math.floor(Math.random() * 250);
+      if (!random_numbers_for_pics.includes(random_num)){
+        await db_utils.execQuery(`insert into dbo.users_ratings (User_id, Pic_id, rating) values (2, '${random_num}' , '${Math.floor(Math.random() * 10 + 1)}')`);
+        random_numbers_for_pics.push(random_num);
+      }
+      else{
+        j -= 1;
+      }
+    }
+    const ans = await db_utils.execQuery(`select User_id from dbo.users_ratings`);
+    res.status(200).send({mes: ans.length});
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
+
 module.exports = router;
