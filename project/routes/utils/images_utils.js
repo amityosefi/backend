@@ -53,24 +53,14 @@ async function getAllPictures(categories, numbers){
     }
     const mergedArrays = [].concat.apply([], all_url_pictures);
     let returnArr = [];
-    let tmp = { id: 0 , url: ""};
-    mergedArrays.map((path)=>
+    let tmp = [];
+    for(var i = 0 ; i < mergedArrays.length;i+=2)
     {
-        // let base64 = path;
-        if(isNaN(path)){ 
-            console.log(path);
-        // let base64 =  fs.readFileSync(path,'base64');
-            let base64 = fs.readFileSync(path,'base64');
-            tmp.url = base64;
-            returnArr.push(tmp);
-        }
-        else{
-            let tmp = { id: 0 , url: ""};
-            tmp.id = path;
-        }
-        
-    });
+        dict = {id:mergedArrays[i],src:fs.readFileSync(mergedArrays[i+1],'base64')}
+        returnArr.push(dict);
+    }
     return {urls: returnArr};
+
 }
 
 async function insertRatings(user_id, pict_ratings){
@@ -84,8 +74,47 @@ async function insertRatings(user_id, pict_ratings){
     return "Insert fail";
 }
 
+async function getSecondGameImages(user_id){
+    let best_ratings = [];
+    let worst_ratings = [];
+    let counter = 10;
+    while (best_ratings.length < 18){ // 25% of 72 pictures = 18
+        best_ratings = best_ratings.concat.apply(best_ratings, (await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`)));
+        counter -= 1;
+    }
+    counter = 0;
+    while(worst_ratings.length < 36){ // 50% of 72 pictures = 36
+        worst_ratings = worst_ratings.concat.apply(worst_ratings, ( await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`)));
+        counter += 1;
+    }
+    console.log(best_ratings.length); // needs to be more than 18
+    console.log(worst_ratings.length); // needs to be more than 36
+
+    best_ratings = await getRandomImages(best_ratings, 2);
+    worst_ratings = await getRandomImages(worst_ratings, 6);
+
+    return {best: best_ratings, worst: worst_ratings}; 
+}
+
+async function getRandomImages(arr_ratings, count){
+    const len = arr_ratings.length;
+    const arr_random = [];
+    const arr_res = [];
+    while(arr_res.length < count){
+        let rand = Math.floor(Math.random() * len);
+        if (!arr_random.includes(rand))
+            arr_res.push(arr_ratings[rand]);
+            arr_random.push(rand);
+    }
+    return arr_res;
+    
+}
+
+
+
 
 // exports.getRandomPictures = getRandomPictures;
 // exports.getRandomcategories = getRandomcategories;
 exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
+exports.getSecondGameImages = getSecondGameImages;
