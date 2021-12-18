@@ -53,23 +53,12 @@ async function getAllPictures(categories, numbers){
     }
     const mergedArrays = [].concat.apply([], all_url_pictures);
     let returnArr = [];
-    let tmp = { id: 0 , url: ""};
-    mergedArrays.map((path)=>
+    let tmp = [];
+    for(var i = 0 ; i < mergedArrays.length;i+=2)
     {
-        // let base64 = path;
-        if(isNaN(path)){ 
-            console.log(path);
-        // let base64 =  fs.readFileSync(path,'base64');
-            let base64 = fs.readFileSync(path,'base64');
-            tmp.url = base64;
-            returnArr.push(tmp);
-        }
-        else{
-            let tmp = { id: 0 , url: ""};
-            tmp.id = path;
-        }
-        
-    });
+        dict = {Id:mergedArrays[i],src:fs.readFileSync(mergedArrays[i+1],"base64")}
+        returnArr.push(dict);
+    }
     return {urls: returnArr};
 }
 
