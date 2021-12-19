@@ -66,8 +66,10 @@ async function getAllPictures(categories, numbers){
 async function insertRatings(user_id, pict_ratings){
     if (pict_ratings.length >= 4) { // 72
         for(let i=0; i< pict_ratings.length; i++){
-            const sql_query = await db_utils.execQuery(`INSERT INTO dbo.users_ratings (User_id, Pic_id, rating)
-            VALUES ('${user_id}', '${pict_ratings[0]}', '${pict_ratings[1]}');`);
+            let id = pict_ratings[i].picId;
+            let rate = pict_ratings[i].rating;
+            await db_utils.execQuery(`INSERT INTO dbo.users_ratings (User_id, Pic_id, rating)
+            VALUES ('${user_id}', '${id}', '${rate}');`);
     }
     return "Insert success";
     }

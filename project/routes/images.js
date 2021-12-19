@@ -151,6 +151,7 @@ router.get('/checkCompress', async function(req, res) {
 router.post('/submitRatings', async function(req, res) {
   try {
     // const user_id = req.session.user_id;
+    user_id = 1;
     const pict_ratings = req.body.data_ratings;
     console.log(pict_ratings);
     const ans = await images_utils.insertRatings(user_id, pict_ratings);
