@@ -46,7 +46,7 @@ router.post("/register", async (req, res, next) => {
       res.status(200).send({message: "There is already Email"});
     else{
       // hash the password
-    let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
+      let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
       req.body.Password = hash_password;
       const ans = await auth_utils.insertNewUser(req.body.Email, req.body.Password, req.body.FirstName, req.body.LastName, req.body.Gender, req.body.Age);
       res.status(201).send(ans);
@@ -67,6 +67,7 @@ router.post('/login', async function(req, res) {
     const ans = await auth_utils.checkUserPassword(Email);
     if(ans && bcrypt.compareSync(req.body.Password, ans)){
       req.session.user_id = Email;
+      
       res.status(200).send({message: "Login Successfully"});
     }
     else

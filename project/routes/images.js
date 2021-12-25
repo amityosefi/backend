@@ -29,11 +29,11 @@ var FileReader = require('filereader');
  * Authenticate all incoming requests by middleware
  */
 //  router.use(async function (req, res, next) {
-//   if (req.session && req.session.user_id) {
-//     DButils.execQuery("SELECT user_id FROM users")
+//   if (req.headers.user_id) {
+//     db_utils.execQuery("SELECT Email FROM dbo.users")
 //       .then((users) => {
-//         if (users.find((x) => x.user_id === req.session.user_id)) {
-//           req.user_id = req.session.user_id;
+//         if (users.find((x) => x.Email === req.headers.user_id)) {
+//           req.user_id = req.headers.user_id;
 //           next();
 //         }
 //       })
@@ -47,6 +47,8 @@ var FileReader = require('filereader');
 
 router.get('/getImages/:category/:numbers', async function(req, res) {
   try {
+    const user_id = req.user_id;
+    console.log(user_id);
     const category = req.params.category;
     const numbers = req.params.numbers;
 
@@ -150,8 +152,9 @@ router.get('/checkCompress', async function(req, res) {
 
 router.post('/submitRatings', async function(req, res) {
   try {
-    // const user_id = req.session.user_id;
-    user_id = 1;
+    const user_id = req.session.user_id;
+    console.log(user_id);
+    // user_id = 1;
     const pict_ratings = req.body.data_ratings;
     console.log(pict_ratings);
     const ans = await images_utils.insertRatings(user_id, pict_ratings);

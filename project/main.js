@@ -62,6 +62,23 @@ const host = '0.0.0.0'
 const auth = require("./routes/auth");
 const images = require("./routes/images");
 
+
+app.use(function (req, res, next) {
+  if (req.session && req.session.user_id) {
+    db_utils.execQuery("SELECT Email FROM users")
+      .then((users) => {
+        if (users.find((x) => x.Email === req.session.user_id)) {
+          req.user_id = req.session.user_id;
+        }
+        next();
+      })
+      .catch((error) => next());
+  } else {
+    next();
+  }
+});
+
+
 app.use("/images", images);
 app.use(auth);
 
