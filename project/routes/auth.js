@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const auth_utils = require("./utils/auth_utils");
-const db_utils = require("./utils/db_utils");
 const bcrypt = require("bcrypt");
 
 
