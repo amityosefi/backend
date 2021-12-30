@@ -14,6 +14,7 @@ async function checkUserPassword(Email){
     else
         return undefined;
     }
+
 async function insertNewUser(Email, Password, FirstName, LastName, Gender, Age){
     const query = `INSERT INTO dbo.users (Email, Password, FirstName, LastName, Gender, Age) VALUES ('${Email}', '${Password}','${FirstName}', '${LastName}','${Gender}','${Age}')`;
     const beforeInsert = await db_utils.execQuery(`SElECT count(*) as 'num' FROM dbo.users`);
@@ -25,6 +26,16 @@ async function insertNewUser(Email, Password, FirstName, LastName, Gender, Age){
         return {message: "There was a problem adding this user"};
 }
 
+async function getId(email){
+    const query = `SElECT Id FROM dbo.users WHERE Email = '${email}'`;
+    const params = await db_utils.execQuery(query);
+    if(params[0])
+        return params[0].Id;
+    else
+        return undefined;
+}
+
 exports.checkEmailExistence = checkEmailExistence;
 exports.checkUserPassword = checkUserPassword;
 exports.insertNewUser = insertNewUser;
+exports.getId = getId;
