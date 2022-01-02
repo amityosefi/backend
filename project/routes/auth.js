@@ -64,13 +64,12 @@ router.post('/login', async function(req, res) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
     const ans = await auth_utils.checkUserPassword(Email);
-    if(ans && bcrypt.compareSync(req.body.Password, ans)){
-      req.session.user_id = Email;
-      
-      res.status(200).send({message: "Login Successfully"});
+    if(ans[0] && bcrypt.compareSync(req.body.Password, ans[0])){
+      req.session.user_id = ans[1];
+      res.status(200).send({message: "Login Successful" ,Id:req.session.user_id});
     }
     else
-      res.status(200).send({message: "There is no Email or password"});
+      res.status(300).send({message: "There is no Email or password"});
   } catch (err) {
     console.log(err);
     res.status(500).send({message: new Error(err)});

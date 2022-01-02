@@ -65,8 +65,11 @@ async function getAllPictures(categories, numbers) {
 async function insertRatings(user_id, pict_ratings) {
     if (pict_ratings.length >= 4) { // 72
         for (let i = 0; i < pict_ratings.length; i++) {
+            let pic  = pict_ratings[i];
+            let pic_id = pic.picId;
+            let rating = pic.rating;
             const sql_query = await db_utils.execQuery(`INSERT INTO dbo.users_ratings (User_id, Pic_id, rating)
-            VALUES ('${user_id}', '${pict_ratings[0]}', '${pict_ratings[1]}');`);
+            VALUES ('${user_id}', '${pic_id}', '${rating}');`);
         }
         return "Insert success";
     }
@@ -82,11 +85,19 @@ async function getSecondGameImages(user_id) {
         best_ratings = best_ratings.concat.apply(best_ratings, x);
         counter -= 1;
     }
+    if(best_ratings.length > 2)
+    {
+        best_ratings.slice(0,3);
+    }
     counter = 0;
     while (worst_ratings.length < 6) { // 50% of 72 pictures = 36
         let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
         counter += 1;
+    }
+    if(best_ratings.length > 6)
+    {
+        best_ratings.slice(0,6);
     }
     // console.log(best_ratings.length); // needs to be more than 18
     // console.log(worst_ratings.length); // needs to be more than 36
