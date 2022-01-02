@@ -167,10 +167,10 @@ router.post('/submitRatings', async function(req, res) {
 }
 });
 
-router.get('/getSecondGameImages', async function(req, res){
+router.post('/getSecondGameImages', async function(req, res){
   try {
     // const user_id = req.session.user_id;
-    const user_id = req.user_id;
+    const user_id = req.body.id;
 
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);
