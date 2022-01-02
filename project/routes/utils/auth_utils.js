@@ -7,10 +7,11 @@ async function checkEmailExistence(Email){
 }
 
 async function checkUserPassword(Email){
-    const query = `SElECT Password FROM dbo.users WHERE Email = '${Email}'`;
+    const query = `Select Password,Id FROM dbo.users WHERE Email = '${Email}'`;
     const params = await db_utils.execQuery(query);
+    
     if(params[0])
-        return params[0].Password;
+        return [params[0].Password,params[0].Id];
     else
         return undefined;
     }

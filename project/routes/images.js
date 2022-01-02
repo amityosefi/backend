@@ -155,8 +155,8 @@ router.post('/submitRatings', async function(req, res) {
   try {
     // const user_id = req.session.user_id;
     // console.log(user_id);
-    const email = "amit@gmail.com";
-    const user_id = await auth_utils.getId(email);
+    
+    const user_id = req.body.id;
     // user_id = 1;
     const pict_ratings = req.body.data_ratings;
     const ans = await images_utils.insertRatings(user_id, pict_ratings);
@@ -167,10 +167,10 @@ router.post('/submitRatings', async function(req, res) {
 }
 });
 
-router.get('/getSecondGameImages', async function(req, res){
+router.post('/getSecondGameImages', async function(req, res){
   try {
     // const user_id = req.session.user_id;
-    const user_id = 24;
+    const user_id = req.body.id;
 
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);

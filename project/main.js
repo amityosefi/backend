@@ -64,10 +64,11 @@ const images = require("./routes/images");
 
 
 app.use(function (req, res, next) {
+  console.log("req",req.session)
   if (req.session && req.session.user_id) {
-    db_utils.execQuery("SELECT Email FROM users")
+    db_utils.execQuery("SELECT Id FROM users")
       .then((users) => {
-        if (users.find((x) => x.Email === req.session.user_id)) {
+        if (users.find((x) => x.Id === req.session.user_id)) {
           req.user_id = req.session.user_id;
         }
         next();
