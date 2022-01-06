@@ -24,7 +24,7 @@ const path = require('path');
 
 const zlib = require('zlib');
 var FileReader = require('filereader');
-
+let image_arr = undefined
 
 /**
  * Authenticate all incoming requests by middleware
@@ -52,11 +52,15 @@ router.get('/getImages/:category/:numbers', async function(req, res) {
     console.log(user_id);
     const category = req.params.category;
     const numbers = req.params.numbers;
-
+    if(this.image_arr)
+    {
+      res.status(200).send(this.image_arr);
+    }
     if (!category || isNaN(numbers) || category >= 8) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
     const ans = await images_utils.getAllPictures(category, numbers);
+    this.image_arr = ans;
     res.status(200).send(ans);
 
   } catch (err) {
@@ -153,11 +157,9 @@ router.get('/checkCompress', async function(req, res) {
 
 router.post('/submitRatings', async function(req, res) {
   try {
-    // const user_id = req.session.user_id;
-    // console.log(user_id);
-    
+
     const user_id = req.body.id;
-    // user_id = 1;
+
     const pict_ratings = req.body.data_ratings;
     const ans = await images_utils.insertRatings(user_id, pict_ratings);
     res.status(200).send(ans);
