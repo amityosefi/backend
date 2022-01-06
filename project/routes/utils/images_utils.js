@@ -89,7 +89,7 @@ async function getSecondGameImages(user_id) {
     {
         best_ratings.slice(0,3);
     }
-    counter = 0;
+    counter = 1;
     while (worst_ratings.length < 6) { // 50% of 72 pictures = 36
         let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
