@@ -1,13 +1,11 @@
 const sql = require("mssql");
 
 const config = {
-    server: 'DESKTOP-VN5OOAQ',
-    port: 1433,
     user: 'daniel',
-    password: '001122',
-    // driver:'msnodesqlv8',   
-    database: 'Pictures',
-    
+    password: 'daniel',
+    server: 'localhost',
+    database: 'pictures',
+    port: 1433,
     options: {
         trustServerCertificate: true,
         encrypt: false,
