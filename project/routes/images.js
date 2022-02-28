@@ -24,7 +24,7 @@ const path = require('path');
 
 const zlib = require('zlib');
 var FileReader = require('filereader');
-let image_arr = undefined
+var image_arr = undefined
 
 /**
  * Authenticate all incoming requests by middleware
@@ -52,9 +52,9 @@ router.get('/getImages/:category/:numbers', async function(req, res) {
     console.log(user_id);
     const category = req.params.category;
     const numbers = req.params.numbers;
-    if(this.image_arr)
+    if(image_arr)
     {
-      res.status(200).send(this.image_arr);
+      res.status(200).send(image_arr);
     }
     if (!category || isNaN(numbers) || category >= 8) {
       res.status(400).send({ message: 'Wrong inputs' });
