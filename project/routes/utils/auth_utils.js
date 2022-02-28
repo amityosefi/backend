@@ -7,17 +7,16 @@ async function checkEmailExistence(Email){
 }
 
 async function checkUserPassword(Email){
-    const query = `Select Password,Id FROM dbo.users WHERE Email = '${Email}'`;
+    const query = `Select Password,Id,IsAdmin FROM dbo.users WHERE Email = '${Email}'`;
     const params = await db_utils.execQuery(query);
-    
     if(params[0])
-        return [params[0].Password,params[0].Id];
+        return [params[0].Password, params[0].Id, params[0].IsAdmin];
     else
         return undefined;
     }
 
 async function insertNewUser(Email, Password, FirstName, LastName, Gender, Age){
-    const query = `INSERT INTO dbo.users (Email, Password, FirstName, LastName, Gender, Age) VALUES ('${Email}', '${Password}','${FirstName}', '${LastName}','${Gender}','${Age}')`;
+    const query = `INSERT INTO dbo.users (Email, Password, FirstName, LastName, Gender, Age, IsAdmin) VALUES ('${Email}', '${Password}','${FirstName}', '${LastName}','${Gender}','${Age}', 0)`;
     const beforeInsert = await db_utils.execQuery(`SElECT count(*) as 'num' FROM dbo.users`);
     const params = await db_utils.execQuery(query);
     const afterInsert = await db_utils.execQuery(`SElECT count(*) as 'num' FROM dbo.users`);
