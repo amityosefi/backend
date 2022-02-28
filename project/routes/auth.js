@@ -30,12 +30,7 @@ router.post("/register", async (req, res, next) => {
     // if (users.find((x) => x.Email === req.body.Email))
     //   throw { status: 409, message: "Email taken" };
 
-    console.log(req.body.Email);
-    console.log(req.body.Password);
-    console.log(req.body.FirstName);
-    console.log(req.body.LastName);
-    console.log(req.body.Gender);
-    console.log(req.body.Age);
+
     if(!req.body.Email || !req.body.Password || !req.body.FirstName || !req.body.LastName || !req.body.Gender || !req.body.Age){
       res.status(400).send({message: "Wrong inputs"});
     }
@@ -56,7 +51,6 @@ router.post("/register", async (req, res, next) => {
 }); 
 
 router.post('/login', async function(req, res) {
-
   try {
     const Email = req.body.Email;
     let Password = req.body.Password;
@@ -64,12 +58,12 @@ router.post('/login', async function(req, res) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
     const ans = await auth_utils.checkUserPassword(Email);
-    if(ans[0] && bcrypt.compareSync(req.body.Password, ans[0])){
+    if(ans && ans[0] && bcrypt.compareSync(req.body.Password, ans[0])){
       req.session.user_id = ans[1];
-      res.status(200).send({message: "Login Successful" ,Id:req.session.user_id});
+      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2]});
     }
     else
-      res.status(300).send({message: "There is no Email or password"});
+      res.status(401).send({message: "There is no Email or password"});
   } catch (err) {
     console.log(err);
     res.status(500).send({message: new Error(err)});

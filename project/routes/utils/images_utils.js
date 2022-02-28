@@ -1,4 +1,6 @@
 const db_utils = require("./db_utils");
+const admin_utils = require("../utils/admin_utils");
+
 
 const topic_names = ['Animals', 'Beaches', 'Big Cities', 'Light Houses', 'Mountains', 'Other', 'Sunsets', 'Universe'];
 var fs = require('fs');
@@ -80,30 +82,34 @@ async function getSecondGameImages(user_id) {
     let best_ratings = [];
     let worst_ratings = [];
     let counter = 10;
-    while (best_ratings.length < 2) { // 25% of 72 pictures = 18
+    const globalSettings = admin_utils.getGlobalSettings();
+    const firstGameImagesSelected  = globalSettings.firstGameImagesSelected;
+    const firstGameImages  = globalSettings.firstGameImages - firstGameImagesSelected;
+
+    while (best_ratings.length < firstGameImagesSelected) { // 25% of 72 pictures = 18
         let x = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         best_ratings = best_ratings.concat.apply(best_ratings, x);
         counter -= 1;
     }
-    if(best_ratings.length > 2)
+    if(best_ratings.length > firstGameImagesSelected)
     {
-        best_ratings.slice(0,3);
+        best_ratings.slice(0,firstGameImagesSelected);
     }
     counter = 0;
-    while (worst_ratings.length < 6) { // 50% of 72 pictures = 36
+    while (worst_ratings.length < firstGameImages) { // 50% of 72 pictures = 36
         let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
         counter += 1;
     }
-    if(best_ratings.length > 6)
+    if(best_ratings.length > firstGameImages)
     {
-        best_ratings.slice(0,6);
+        best_ratings.slice(0,firstGameImages);
     }
     // console.log(best_ratings.length); // needs to be more than 18
     // console.log(worst_ratings.length); // needs to be more than 36
 
-    best_ratings = await getRandomImages(best_ratings, 2);
-    worst_ratings = await getRandomImages(worst_ratings, 6);
+    best_ratings = await getRandomImages(best_ratings, firstGameImagesSelected);
+    worst_ratings = await getRandomImages(worst_ratings, firstGameImages);
 
     best_ratings = await getUrlImages(best_ratings);
     worst_ratings = await getUrlImages(worst_ratings);
