@@ -82,34 +82,21 @@ async function getSecondGameImages(user_id) {
     let best_ratings = [];
     let worst_ratings = [];
     let counter = 10;
-<<<<<<< HEAD
-    while (best_ratings.length < 8) { // 25% of 72 pictures = 18
-=======
     const globalSettings = admin_utils.getGlobalSettings();
     const firstGameImagesSelected  = globalSettings.firstGameImagesSelected;
     const firstGameImages  = globalSettings.firstGameImages - firstGameImagesSelected;
 
     while (best_ratings.length < firstGameImagesSelected) { // 25% of 72 pictures = 18
->>>>>>> master
         let x = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         best_ratings = best_ratings.concat.apply(best_ratings, x);
         counter -= 1;
     }
-<<<<<<< HEAD
-    if(best_ratings.length > 8)
-    {
-        best_ratings.slice(0,8);
-    }
-    counter = 1;
-    while (worst_ratings.length < 6) { // 50% of 72 pictures = 36
-=======
     if(best_ratings.length > firstGameImagesSelected)
     {
         best_ratings.slice(0,firstGameImagesSelected);
     }
     counter = 0;
     while (worst_ratings.length < firstGameImages) { // 50% of 72 pictures = 36
->>>>>>> master
         let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
         counter += 1;
