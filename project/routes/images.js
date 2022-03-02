@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const images_utils = require("./utils/images_utils");
 const auth_utils = require("./utils/auth_utils");
+const admin_utils = require("./utils/admin_utils");
+
 
 // const imagemin = require('imagemin');
 // const imageminJpegtran = require('imagemin-jpegtran');
@@ -46,16 +48,14 @@ var image_arr = undefined
 
 
 
-router.get('/getImages/:category/:numbers', async function(req, res) {
+router.get('/getImages', async function(req, res) {
   try {
-    const user_id = req.user_id;
-    console.log(user_id);
-    const category = req.params.category;
-    const numbers = req.params.numbers;
-    if(image_arr)
-    {
-      res.status(200).send(image_arr);
-    }
+    // const user_id = req.user_id;
+    // console.log(user_id);
+    const globalSettings = admin_utils.getGlobalSettings();
+    const category = 8-2;
+    const numbers =  globalSettings.rankImages / 8 - 3;
+
     if (!category || isNaN(numbers) || category >= 8) {
       res.status(400).send({ message: 'Wrong inputs' });
     }

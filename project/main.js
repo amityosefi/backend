@@ -49,7 +49,6 @@ app.use('/', function(req, res, next) {
 const corsConfig = {
   origin: true,
   credentials: true,
-  
 };
 
 
@@ -61,6 +60,7 @@ const host = '0.0.0.0'
 
 const auth = require("./routes/auth");
 const images = require("./routes/images");
+const admin = require("./routes/admin");
 
 
 app.use(function (req, res, next) {
@@ -79,8 +79,8 @@ app.use(function (req, res, next) {
   }
 });
 
-
 app.use("/images", images);
+app.use("/admin", admin);
 app.use(auth);
 
 
