@@ -2,7 +2,7 @@ const db_utils = require("./db_utils");
 const admin_utils = require("../utils/admin_utils");
 
 
-const topic_names = ['Animals', 'Beaches', 'Big Cities', 'Light Houses', 'Mountains', 'Other', 'Sunsets', 'Universe'];
+const topic_names = ['Beach', 'Cities', 'Flowers', 'Forest', 'Mountain', 'Nature', 'Noam_s images', 'Universe'];
 var fs = require('fs');
 
 async function getRandomcategories(categories) {
