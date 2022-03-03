@@ -4,7 +4,6 @@ const images_utils = require("./utils/images_utils");
 const auth_utils = require("./utils/auth_utils");
 const admin_utils = require("./utils/admin_utils");
 
-
 // const imagemin = require('imagemin');
 // const imageminJpegtran = require('imagemin-jpegtran');
 // const imageminPngquant = require('imagemin-pngquant');
@@ -26,7 +25,7 @@ const path = require('path');
 
 const zlib = require('zlib');
 var FileReader = require('filereader');
-var image_arr = undefined
+
 
 /**
  * Authenticate all incoming requests by middleware
@@ -53,12 +52,10 @@ router.get('/getImages', async function(req, res) {
     // const user_id = req.user_id;
     // console.log(user_id);
     const globalSettings = admin_utils.getGlobalSettings();
-    const category = 8-2;
-    const numbers =  globalSettings.rankImages / 8 - 3;
+    console.log(globalSettings);
+    const category = 8;
+    const numbers =  Math.floor(globalSettings.rankImages / category);
 
-    if (!category || isNaN(numbers) || category >= 8) {
-      res.status(400).send({ message: 'Wrong inputs' });
-    }
     const ans = await images_utils.getAllPictures(category, numbers);
     this.image_arr = ans;
     res.status(200).send(ans);
@@ -70,12 +67,13 @@ router.get('/getImages', async function(req, res) {
 });
 
 
+
 router.get('/checkCompress', async function(req, res) {
 
   try {
     
     
-    var folder = 'D:\\Daniel\\School\\7th semester\\Project\\Images\\';
+    var folder = 'C:\\Images\\Images\\Images\\';
     var files = fs.readdirSync(folder);
 
     for(var i = 0 ; i < files.length ; i++)
@@ -157,9 +155,11 @@ router.get('/checkCompress', async function(req, res) {
 
 router.post('/submitRatings', async function(req, res) {
   try {
-
-    const user_id = req.body.id;
-
+    // const user_id = req.session.user_id;
+    // console.log(user_id);
+    const email = "amit@gmail.com";
+    const user_id = await auth_utils.getId(email);
+    // user_id = 1;
     const pict_ratings = req.body.data_ratings;
     const ans = await images_utils.insertRatings(user_id, pict_ratings);
     res.status(200).send(ans);
@@ -169,10 +169,10 @@ router.post('/submitRatings', async function(req, res) {
 }
 });
 
-router.post('/getSecondGameImages', async function(req, res){
+router.get('/getSecondGameImages', async function(req, res){
   try {
     // const user_id = req.session.user_id;
-    const user_id = req.body.id;
+    const user_id = 24;
 
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);
