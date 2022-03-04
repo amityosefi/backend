@@ -170,11 +170,8 @@ router.post('/submitRatings', async function(req, res) {
 });
 
 router.post('/getSecondGameImages', async function(req, res){
-  console.log(req.body);
   try {
     const user_id = req.body.id;
-    
-
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);
 
@@ -183,6 +180,22 @@ router.post('/getSecondGameImages', async function(req, res){
     res.status(500).send({message: new Error(err)});
   }
 });
+
+router.post('/submitFirstGame', async function(req, res){
+  try {
+    const user_id = req.body.id;
+    const score = req.body.score;
+    const result = req.body.result;
+
+    await images_utils.setFirstGameResults(user_id, score, result);
+    res.status(200).send({message: "The results saved successfully"});
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
 
 
 router.get('/amitCheck', async function(req, res) {
@@ -209,6 +222,9 @@ router.get('/amitCheck', async function(req, res) {
     res.status(500).send({message: new Error(err)});
   }
 });
+
+
+
 
 
 module.exports = router;

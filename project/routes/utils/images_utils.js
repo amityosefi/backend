@@ -144,9 +144,15 @@ async function getUrlImages(arr) {
     return res;
 }
 
+async function setFirstGameResults(user_id, score, result){
+    console.log(String(result));
+    const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
 
-// exports.getRandomPictures = getRandomPictures;
-// exports.getRandomcategories = getRandomcategories;
+    db_utils.execQuery(`INSERT INTO dbo.users_firstGame (id, score, outof, goodImages) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}');`)
+}
+
+
+exports.setFirstGameResults = setFirstGameResults;
 exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
 exports.getSecondGameImages = getSecondGameImages;
