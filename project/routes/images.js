@@ -155,11 +155,8 @@ router.get('/checkCompress', async function(req, res) {
 
 router.post('/submitRatings', async function(req, res) {
   try {
-    // const user_id = req.session.user_id;
-    // console.log(user_id);
-    const email = "amit@gmail.com";
-    const user_id = await auth_utils.getId(email);
-    // user_id = 1;
+    const user_id = req.body.id;
+
     const pict_ratings = req.body.data_ratings;
     const ans = await images_utils.insertRatings(user_id, pict_ratings);
     res.status(200).send(ans);
@@ -181,6 +178,20 @@ router.post('/getSecondGameImages', async function(req, res){
   }
 });
 
+router.post('/getSecondGameImagesOtherPerson', async function(req, res){
+  try {
+    const user_id = req.body.id;
+    const other_id = await images_utils.getOtherUserId(user_id);
+    const ans = await images_utils.getSecondGameImages(other_id);
+    res.status(200).send( {other_id: other_id, ans});
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
+
 router.post('/submitFirstGame', async function(req, res){
   try {
     const user_id = req.body.id;
@@ -196,6 +207,22 @@ router.post('/submitFirstGame', async function(req, res){
   }
 });
 
+
+router.post('/submitSecondGame', async function(req, res){
+  try {
+    const user_id = req.body.id;
+    const other_id = req.body.other_id
+    const score = req.body.score;
+    const result = req.body.result;
+
+    await images_utils.setSecondGameResults(user_id, other_id, score, result);
+    res.status(200).send({message: "The results saved successfully"});
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
 
 
 router.get('/amitCheck', async function(req, res) {

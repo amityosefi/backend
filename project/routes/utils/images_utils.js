@@ -145,13 +145,26 @@ async function getUrlImages(arr) {
 }
 
 async function setFirstGameResults(user_id, score, result){
-    console.log(String(result));
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
 
     db_utils.execQuery(`INSERT INTO dbo.users_firstGame (id, score, outof, goodImages) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}');`)
 }
 
+async function setSecondGameResults(user_id, other, score, result){
+    const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
 
+    db_utils.execQuery(`INSERT INTO dbo.users_secondGame (id, otherId, score, outof, goodImages) VALUES ('${user_id}', '${other}', '${score}','${firstGameImages}', '${String(result)}');`)
+}
+
+async function getOtherUserId(user_id){
+    const allUsers = await db_utils.execQuery(`SELECT DISTINCT User_id from dbo.users_ratings WHERE User_id != ${user_id}`);
+    const users = allUsers.map(x => x.User_id)
+    const random_userId = users[Math.floor(Math.random()*users.length)];
+    return random_userId;
+}
+
+exports.setSecondGameResults = setSecondGameResults;
+exports.getOtherUserId = getOtherUserId;
 exports.setFirstGameResults = setFirstGameResults;
 exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
