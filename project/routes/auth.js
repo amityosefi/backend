@@ -38,7 +38,7 @@ router.post("/register", async (req, res, next) => {
     
     const checkUser = await auth_utils.checkEmailExistence(req.body.Email);
     if(checkUser > 0)
-      res.status(200).send({message: "There is already Email"});
+      res.status(200).send({message: "Email is already exists"});
     else{
       // hash the password
       let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));

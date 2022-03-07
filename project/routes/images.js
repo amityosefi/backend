@@ -168,6 +168,7 @@ router.post('/submitRatings', async function(req, res) {
 
 router.post('/getSecondGameImages', async function(req, res){
   try {
+    console.log(new Date().toLocaleDateString());
     const user_id = req.body.id;
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);

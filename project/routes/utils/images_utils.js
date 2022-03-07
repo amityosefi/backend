@@ -146,14 +146,15 @@ async function getUrlImages(arr) {
 
 async function setFirstGameResults(user_id, score, result){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
+    console.log(new Date());
 
-    db_utils.execQuery(`INSERT INTO dbo.users_firstGame (id, score, outof, goodImages) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}');`)
+    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${new Date().toLocaleDateString()}');`)
 }
 
 async function setSecondGameResults(user_id, other, score, result){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
 
-    db_utils.execQuery(`INSERT INTO dbo.users_secondGame (id, otherId, score, outof, goodImages) VALUES ('${user_id}', '${other}', '${score}','${firstGameImages}', '${String(result)}');`)
+    db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, timestamp) VALUES ('${user_id}', '${other}', '${score}','${firstGameImages}', '${String(result)}', '${new Date().toLocaleDateString()}');`)
 }
 
 async function getOtherUserId(user_id){
