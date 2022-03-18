@@ -168,7 +168,7 @@ router.post('/submitRatings', async function(req, res) {
 
 router.post('/getSecondGameImages', async function(req, res){
   try {
-    console.log(new Date().toLocaleDateString());
+    // console.log(new Date().toLocaleDateString());
     const user_id = req.body.id;
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);
@@ -252,6 +252,17 @@ router.get('/amitCheck', async function(req, res) {
 });
 
 
+router.get('/getLeaders', async function(req, res) {
+
+  try {
+    const leaders = await images_utils.getLeaders();
+    res.status(200).send(leaders);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
 
 
 

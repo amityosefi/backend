@@ -32,7 +32,7 @@ router.post("/register", async (req, res, next) => {
     //   throw { status: 409, message: "Email taken" };
 
 
-    if(!req.body.Email || !req.body.Password || !req.body.FirstName || !req.body.LastName || !req.body.Gender || !req.body.Age){
+    if(!req.body.Email || !req.body.Password || !req.body.Fullname || !req.body.Gender || !req.body.Age){
       res.status(400).send({message: "Wrong inputs"});
     }
     
@@ -43,7 +43,7 @@ router.post("/register", async (req, res, next) => {
       // hash the password
       let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
       req.body.Password = hash_password;
-      const ans = await auth_utils.insertNewUser(req.body.Email, req.body.Password, req.body.FirstName, req.body.LastName, req.body.Gender, req.body.Age);
+      const ans = await auth_utils.insertNewUser(req.body.Email, req.body.Password, req.body.Fullname, req.body.Gender, req.body.Age);
       res.status(201).send(ans);
     }
   } catch (error) {
