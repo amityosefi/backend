@@ -54,10 +54,13 @@ async function getAllPictures(categories, numbers) {
 
     }
     const mergedArrays = [].concat.apply([], all_url_pictures);
+    console.log("///////////////////");
+    console.log(mergedArrays);
+    console.log("///////////////////");
     let returnArr = [];
     let tmp = [];
     for (var i = 0; i < mergedArrays.length; i += 2) {
-        dict = { id: mergedArrays[i], src: fs.readFileSync(mergedArrays[i + 1], 'base64') }
+        dict = { id: mergedArrays[i], src: fs.readFileSync(mergedArrays[i+1], 'base64') }
         returnArr.push(dict);
     }
     return { urls: returnArr };
