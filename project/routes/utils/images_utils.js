@@ -149,7 +149,6 @@ async function getUrlImages(arr) {
 
 async function setFirstGameResults(user_id, score, result){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
-    console.log(new Date());
 
     db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${new Date().toLocaleDateString()}');`)
 }
@@ -167,9 +166,23 @@ async function getOtherUserId(user_id){
     return random_userId;
 }
 
+async function getOtherUserId(user_id){
+    const allUsers = await db_utils.execQuery(`SELECT DISTINCT User_id from dbo.users_ratings WHERE User_id != ${user_id}`);
+    const users = allUsers.map(x => x.User_id)
+    const random_userId = users[Math.floor(Math.random()*users.length)];
+    return random_userId;
+}
+
+async function getLeaders(){
+    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName`);
+    // SELECT FullName, rating FROM dbo.users INNER JOIN dbo.users_ratings ON table1.column_name = table2.column_name;
+    return allUsers;
+}
+
 exports.setSecondGameResults = setSecondGameResults;
 exports.getOtherUserId = getOtherUserId;
 exports.setFirstGameResults = setFirstGameResults;
 exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
 exports.getSecondGameImages = getSecondGameImages;
+exports.getLeaders = getLeaders;

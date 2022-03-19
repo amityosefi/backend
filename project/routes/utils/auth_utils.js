@@ -15,8 +15,8 @@ async function checkUserPassword(Email){
         return undefined;
     }
 
-async function insertNewUser(Email, Password, FirstName, LastName, Gender, Age){
-    const query = `INSERT INTO dbo.users (Email, Password, FirstName, LastName, Gender, Age, IsAdmin) VALUES ('${Email}', '${Password}','${FirstName}', '${LastName}','${Gender}','${Age}', 0)`;
+async function insertNewUser(Email, Password, Fullname, Gender, Age){
+    const query = `INSERT INTO dbo.users (Email, Password, FullName, Gender, Age, IsAdmin) VALUES ('${Email}', '${Password}','${Fullname}', '${Gender}','${Age}', 0)`;
     const beforeInsert = await db_utils.execQuery(`SElECT count(*) as 'num' FROM dbo.users`);
     const params = await db_utils.execQuery(query);
     const afterInsert = await db_utils.execQuery(`SElECT count(*) as 'num' FROM dbo.users`);
