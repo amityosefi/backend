@@ -49,10 +49,8 @@ var FileReader = require('filereader');
 
 router.get('/getImages', async function(req, res) {
   try {
-    // const user_id = req.user_id;
-    // console.log(user_id);
+
     const globalSettings = admin_utils.getGlobalSettings();
-    console.log(globalSettings);
     const category = 8;
     const numbers =  Math.floor(globalSettings.rankImages / category);
 
@@ -168,7 +166,6 @@ router.post('/submitRatings', async function(req, res) {
 
 router.post('/getSecondGameImages', async function(req, res){
   try {
-    // console.log(new Date().toLocaleDateString());
     const user_id = req.body.id;
     const ans = await images_utils.getSecondGameImages(user_id);
     res.status(200).send(ans);
@@ -198,8 +195,9 @@ router.post('/submitFirstGame', async function(req, res){
     const user_id = req.body.id;
     const score = req.body.score;
     const result = req.body.result;
+    const allImages = req.body.allImages;
 
-    await images_utils.setFirstGameResults(user_id, score, result);
+    await images_utils.setFirstGameResults(user_id, score, result, allImages);
     res.status(200).send({message: "The results saved successfully"});
 
   } catch (err) {
@@ -215,8 +213,9 @@ router.post('/submitSecondGame', async function(req, res){
     const other_id = req.body.other_id
     const score = req.body.score;
     const result = req.body.result;
+    const allImages = req.body.allImages;
 
-    await images_utils.setSecondGameResults(user_id, other_id, score, result);
+    await images_utils.setSecondGameResults(user_id, other_id, score, result, allImages);
     res.status(200).send({message: "The results saved successfully"});
 
   } catch (err) {
