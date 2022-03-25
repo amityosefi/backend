@@ -35,7 +35,18 @@ async function getId(email){
         return undefined;
 }
 
+async function getFullname(email){
+    const query = `SElECT FullName FROM dbo.users WHERE Email = '${email}'`;
+    const params = await db_utils.execQuery(query);
+    if(params[0])
+        return params[0].FullName;
+    else
+        return undefined;
+}
+
+
 exports.checkEmailExistence = checkEmailExistence;
 exports.checkUserPassword = checkUserPassword;
 exports.insertNewUser = insertNewUser;
 exports.getId = getId;
+exports.getFullname = getFullname;

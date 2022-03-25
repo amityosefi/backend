@@ -147,7 +147,9 @@ async function getUrlImages(arr) {
 async function setFirstGameResults(user_id, score, result){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
 
-    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${new Date().toLocaleDateString()}');`)
+    console.log(new Date().toLocaleDateString());
+
+    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${'sad'}', '${String(new Date().toLocaleDateString())}');`)
 }
 
 async function setSecondGameResults(user_id, other, score, result){
@@ -171,7 +173,7 @@ async function getOtherUserId(user_id){
 }
 
 async function getLeaders(){
-    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName`);
+    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName ORDER BY TotalScore DESC;`);
     // SELECT FullName, rating FROM dbo.users INNER JOIN dbo.users_ratings ON table1.column_name = table2.column_name;
     return allUsers;
 }
