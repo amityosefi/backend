@@ -72,6 +72,16 @@ router.post('/login', async function(req, res) {
   }
 });
 
+router.post("/getFullname", async (req, res, next) => {
+  try {
+    const Email = req.body.Email;
+    const fullname = await auth_utils.getFullname(Email);
+    res.status(201).send(fullname);
+    
+  } catch (error) {
+    next(error);
+ }
+}); 
 
 router.post("/logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!

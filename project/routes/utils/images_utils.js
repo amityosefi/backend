@@ -89,7 +89,7 @@ async function getSecondGameImages(user_id) {
     const firstGameImagesSelected  = globalSettings.firstGameImagesSelected;
     const firstGameImages  = globalSettings.firstGameImages - firstGameImagesSelected;
 
-    while (best_ratings.length < firstGameImagesSelected) { // 25% of 72 pictures = 18
+    while (best_ratings.length < firstGameImagesSelected * 4) {
         let x = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         best_ratings = best_ratings.concat.apply(best_ratings, x);
         counter -= 1;
@@ -99,7 +99,7 @@ async function getSecondGameImages(user_id) {
         best_ratings.slice(0,firstGameImagesSelected);
     }
     counter = 0;
-    while (worst_ratings.length < firstGameImages) { // 50% of 72 pictures = 36
+    while (worst_ratings.length < firstGameImages * 4) {
         let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
         counter += 1;
@@ -108,11 +108,9 @@ async function getSecondGameImages(user_id) {
     {
         best_ratings.slice(0,firstGameImages);
     }
-    // console.log(best_ratings.length); // needs to be more than 18
-    // console.log(worst_ratings.length); // needs to be more than 36
 
-    best_ratings = await getRandomImages(best_ratings, firstGameImagesSelected);
-    worst_ratings = await getRandomImages(worst_ratings, firstGameImages);
+    best_ratings = await getRandomImages(best_ratings, firstGameImagesSelected * 4);
+    worst_ratings = await getRandomImages(worst_ratings, firstGameImages * 4);
 
     best_ratings = await getUrlImages(best_ratings);
     worst_ratings = await getUrlImages(worst_ratings);
@@ -147,16 +145,22 @@ async function getUrlImages(arr) {
     return res;
 }
 
-async function setFirstGameResults(user_id, score, result){
+async function setFirstGameResults(user_id, score, result, allImages){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
 
-    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${new Date().toLocaleDateString()}');`)
+    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${String(allImages)}', '${String(new Date().toLocaleDateString())}');`)
 }
 
-async function setSecondGameResults(user_id, other, score, result){
+async function setSecondGameResults(user_id, other, score, result, allImages){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
-
-    db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, timestamp) VALUES ('${user_id}', '${other}', '${score}','${firstGameImages}', '${String(result)}', '${new Date().toLocaleDateString()}');`)
+    console.log(user_id)
+    console.log(other)
+    console.log(score)
+    console.log(firstGameImages)
+    console.log(String(result))
+    console.log(String(allImages))
+    console.log(String(new Date().toLocaleDateString()))
+    db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${other}', '${score}', '${firstGameImages}', '${String(result)}', '${String(allImages)}', '${String(new Date().toLocaleDateString())}');`)
 }
 
 async function getOtherUserId(user_id){
@@ -174,7 +178,7 @@ async function getOtherUserId(user_id){
 }
 
 async function getLeaders(){
-    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName`);
+    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName ORDER BY TotalScore DESC;`);
     // SELECT FullName, rating FROM dbo.users INNER JOIN dbo.users_ratings ON table1.column_name = table2.column_name;
     return allUsers;
 }
