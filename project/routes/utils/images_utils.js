@@ -130,6 +130,63 @@ async function getRandomImages(arr_ratings, count) {
     }
     return arr_res;
 }
+async function fetchImages(pics,bins)
+{
+    let pl = pics.length;
+    let bl = bins.length;
+    let unrated = []
+    let rated = []
+    if(pl > 0)
+    {
+        let str = "select Id, Url from dbo.Images where ";
+        for(var img = 0 ; img <pics.length; img++)
+        {
+            str+=("Id = "+String(pics[img])+" ");
+            if(img < pics.length -1 )
+                str+="or ";
+        }
+        unrated = await db_utils.execQuery(str);
+    }
+    if(bl >0)
+    {
+        let str_bins = "select Id, Url from dbo.Images where ";
+        for(var img = 0 ; img <bins.length; img++)
+        {
+            str_bins+=("Id = "+bins[img].picId+" ");
+            if(img < bins.length -1 )
+                str_bins+="or ";
+        }
+        rated = await db_utils.execQuery(str_bins);
+    }
+    
+    
+    
+    
+    
+    unrated_arr = []
+    for(var i in unrated)
+    {
+        let img = unrated[i];
+        let pic_id = img.Id;
+        let url = fs.readFileSync(img.Url , 'base64');
+        unrated_arr.push({id:pic_id,src:url})
+    }
+    rated_arr = []
+    for(var i in rated)
+    {
+        let img = rated[i];
+        let pic_id = img.Id;
+        let url = fs.readFileSync(img.Url , 'base64');
+        let _rating = bins[i].rating
+        rated_arr.push({id:pic_id,src:url,rating:_rating})
+    }
+    let arr = []
+    
+    arr.push(unrated_arr)
+    arr.push(rated_arr)
+    
+    return arr;
+}
 
 async function getUrlImages(arr) {
     res = [];
@@ -147,8 +204,16 @@ async function getUrlImages(arr) {
 
 async function setFirstGameResults(user_id, score, result, allImages){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
+    console.log("user_id",user_id);
+    console.log("score",score);
+    console.log("result",result);
+    console.log("allImages",allImages);
+    console.log("firstGameImages",firstGameImages);
+    console.log("date",new Date().toLocaleDateString());
+    const d = new Date();
+    const dt = `${d.getFullYear()}-${d.getUTCMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()}`;
 
-    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${String(allImages)}', '${String(new Date().toLocaleDateString())}');`)
+    db_utils.execQuery(`INSERT INTO dbo.first_game_scores (user_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${score}','${firstGameImages}', '${String(result)}', '${String(allImages)}', '${dt}');`)
 }
 
 async function setSecondGameResults(user_id, other, score, result, allImages){
@@ -190,3 +255,4 @@ exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
 exports.getSecondGameImages = getSecondGameImages;
 exports.getLeaders = getLeaders;
+exports.fetchImnages = fetchImages;

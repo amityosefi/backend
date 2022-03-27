@@ -206,7 +206,21 @@ router.post('/submitFirstGame', async function(req, res){
   }
 });
 
+router.post('/fetchSpecificImages', async function(req, res){
+  try {
+    const pics = req.body.pics;
+    const bins = req.body.bins;
+    console.log("pics",pics)
+    console.log("bins",bins)
+    let ans = await images_utils.fetchImnages(pics,bins);
+    
+    res.status(200).send(ans);
 
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
 router.post('/submitSecondGame', async function(req, res){
   try {
     const user_id = req.body.id;
