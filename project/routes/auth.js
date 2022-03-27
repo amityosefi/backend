@@ -3,6 +3,7 @@ const router = express.Router();
 const auth_utils = require("./utils/auth_utils");
 const bcrypt = require("bcrypt");
 const admin_utils = require("./utils/admin_utils");
+const images_utils = require("./utils/images_utils");
 
 
 // router.use(async function (req, res, next) {
@@ -62,7 +63,9 @@ router.post('/login', async function(req, res) {
     if(ans && ans[0] && bcrypt.compareSync(req.body.Password, ans[0])){
       req.session.user_id = ans[1];
       const globalSettings = await admin_utils.getGlobalSettings();
-      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], globalSettings: globalSettings});
+      const user_score = await images_utils.getUserScore(req.session.user_id);
+      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], globalSettings: globalSettings, user_score:user_score, last_time: ans[3].getDate()+'-'+String(Number(ans[3].getMonth())+1)+'-'+ans[3].getFullYear()});
+      auth_utils.update_last_time(ans[1]);
     }
     else
       res.status(401).send({message: "There is no Email or password"});
