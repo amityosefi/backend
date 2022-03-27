@@ -64,7 +64,13 @@ router.post('/login', async function(req, res) {
       req.session.user_id = ans[1];
       const globalSettings = await admin_utils.getGlobalSettings();
       const user_score = await images_utils.getUserScore(req.session.user_id);
-      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], globalSettings: globalSettings, user_score:user_score, last_time: ans[3].getDate()+'-'+String(Number(ans[3].getMonth())+1)+'-'+ans[3].getFullYear()});
+      if (ans[3] == undefined) {
+        ans[3] = "27/03/2022";
+      }
+      else {
+        ans[3] = ans[3].getDate()+'-'+String(Number(ans[3].getMonth())+1)+'-'+ans[3].getFullYear();
+      }
+      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], globalSettings: globalSettings, user_score:user_score, last_time: ans[3]});
       auth_utils.update_last_time(ans[1]);
     }
     else
