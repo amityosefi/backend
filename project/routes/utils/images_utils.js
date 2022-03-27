@@ -150,13 +150,13 @@ async function setFirstGameResults(user_id, score, result, allImages){
 
 async function setSecondGameResults(user_id, other, score, result, allImages){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
-    console.log(user_id)
-    console.log(other)
-    console.log(score)
-    console.log(firstGameImages)
-    console.log(String(result))
-    console.log(String(allImages))
-    console.log(String(new Date().toLocaleDateString()))
+    // console.log(user_id)
+    // console.log(other)
+    // console.log(score)
+    // console.log(firstGameImages)
+    // console.log(String(result))
+    // console.log(String(allImages))
+    // console.log(String(new Date().toLocaleDateString()))
     db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${other}', '${score}', '${firstGameImages}', '${String(result)}', '${String(allImages)}', '${String(new Date().toLocaleDateString())}');`)
 }
 
@@ -176,7 +176,6 @@ async function getOtherUserId(user_id){
 
 async function getLeaders(){
     const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName ORDER BY TotalScore DESC;`);
-    // SELECT FullName, rating FROM dbo.users INNER JOIN dbo.users_ratings ON table1.column_name = table2.column_name;
     return allUsers;
 }
 

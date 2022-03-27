@@ -72,9 +72,9 @@ router.post('/login', async function(req, res) {
   }
 });
 
-router.post("/getFullname", async (req, res, next) => {
+router.get("/getFullname/:Email", async (req, res, next) => {
   try {
-    const Email = req.body.Email;
+    const Email = req.params.Email;
     const fullname = await auth_utils.getFullname(Email);
     res.status(201).send(fullname);
     
