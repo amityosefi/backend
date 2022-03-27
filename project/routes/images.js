@@ -211,9 +211,6 @@ router.post('/submitSecondGame', async function(req, res){
   try {
     const user_id = req.body.id;
     const other_id = req.body.other_id
-    console.log(other_id)
-    console.log(req.body);
-    console.log("----------------------")
     const score = req.body.score;
     const result = req.body.result;
     const allImages = req.body.allImages;
