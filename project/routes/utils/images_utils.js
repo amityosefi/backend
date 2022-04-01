@@ -180,6 +180,18 @@ async function getUserScore(user_id){
     return 0;
 }
 
+async function getLastTime(user_id){
+    let user_last_time = await db_utils.execQuery(`select distinct timestamp from dbo.first_game_scores where user_id=${user_id}`)
+    console.log(user_last_time)
+    if(user_last_time[0]){
+        user_last_time = user_last_time[user_last_time.length-1].timestamp;
+        user_last_time = user_last_time.getDate()+'-'+String(Number(user_last_time.getMonth())+1)+'-'+user_last_time.getFullYear();        
+        return user_last_time;
+    }
+    return undefined;
+}
+
+exports.getLastTime = getLastTime;
 exports.getUserScore = getUserScore;
 exports.setSecondGameResults = setSecondGameResults;
 exports.getOtherUserId = getOtherUserId;
