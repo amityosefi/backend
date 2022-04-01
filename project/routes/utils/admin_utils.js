@@ -1,3 +1,4 @@
+const db_utils = require("./db_utils");
 
 let globalSettings = {
     'rankImages' : 72,
@@ -15,5 +16,13 @@ async function changeSettings(rankImages, firstGameImages, firstGameImagesSelect
     globalSettings.firstGameImagesSelected = firstGameImagesSelected;
     return globalSettings;
 }
+async function review(text){
+    const query = `INSERT INTO dbo.Reviews (review) VALUES ('${text}')`;
+    await db_utils.execQuery(query);
+    return {ans: "The text insert to db"};
+}
+
+
+exports.review = review;
 exports.getGlobalSettings = getGlobalSettings;
 exports.changeSettings = changeSettings;

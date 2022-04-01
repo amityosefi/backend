@@ -64,14 +64,8 @@ router.post('/login', async function(req, res) {
       req.session.user_id = ans[1];
       const globalSettings = await admin_utils.getGlobalSettings();
       const user_score = await images_utils.getUserScore(req.session.user_id);
-      if (ans[3] == undefined) {
-        ans[3] = "27/03/2022";
-      }
-      else {
-        ans[3] = ans[3].getDate()+'-'+String(Number(ans[3].getMonth())+1)+'-'+ans[3].getFullYear();
-      }
-      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], globalSettings: globalSettings, user_score:user_score, last_time: ans[3]});
-      auth_utils.update_last_time(ans[1]);
+      const user_last_time = await images_utils.getLastTime(ans[1]);
+      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], FullName: ans[3], globalSettings: globalSettings, user_score:user_score, last_time: user_last_time});
     }
     else
       res.status(401).send({message: "There is no Email or password"});
@@ -83,7 +77,9 @@ router.post('/login', async function(req, res) {
 
 router.get("/getFullname/:Email", async (req, res, next) => {
   try {
+    console.log("Asd")
     const Email = req.params.Email;
+    console.log(Email);
     const fullname = await auth_utils.getFullname(Email);
     res.status(201).send(fullname);
     

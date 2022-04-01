@@ -31,4 +31,14 @@ router.post('/changeSettings', async function (req, res) {
     }
 });
 
+router.post('/review', async function (req, res) {
+    try {
+        const text = req.body.text;
+        const ans = await admin_utils.review(text);
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
 module.exports = router;
