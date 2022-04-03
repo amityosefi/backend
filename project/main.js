@@ -64,7 +64,6 @@ const admin = require("./routes/admin");
 
 
 app.use(function (req, res, next) {
-  console.log("req",req.session)
   if (req.session && req.session.user_id) {
     db_utils.execQuery("SELECT Id FROM users")
       .then((users) => {

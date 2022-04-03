@@ -4,6 +4,7 @@ const admin_utils = require("../utils/admin_utils");
 
 const topic_names = ['Beach', 'Cities', 'Flowers', 'Forest', 'Mountain', 'Nature', 'Noam_s images', 'Universe'];
 var fs = require('fs');
+const { async } = require("regenerator-runtime");
 
 async function getRandomcategories(categories) {
     let arr = [];
@@ -218,13 +219,6 @@ async function setFirstGameResults(user_id, score, result, allImages){
 
 async function setSecondGameResults(user_id, other, score, result, allImages){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
-    console.log(user_id)
-    console.log(other)
-    console.log(score)
-    console.log(firstGameImages)
-    console.log(String(result))
-    console.log(String(allImages))
-    console.log(String(new Date().toLocaleDateString()))
     db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${other}', '${score}', '${firstGameImages}', '${String(result)}', '${String(allImages)}', '${String(new Date().toLocaleDateString())}');`)
 }
 
@@ -244,10 +238,29 @@ async function getOtherUserId(user_id){
 
 async function getLeaders(){
     const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName ORDER BY TotalScore DESC;`);
-    // SELECT FullName, rating FROM dbo.users INNER JOIN dbo.users_ratings ON table1.column_name = table2.column_name;
     return allUsers;
 }
 
+async function getUserScore(user_id){
+    const user_score = await db_utils.execQuery(`select SUM(score) as score from dbo.first_game_scores where user_id=${user_id} GROUP BY user_id`)
+    if(user_score[0])
+        return user_score[0].score;
+    return 0;
+}
+
+async function getLastTime(user_id){
+    let user_last_time = await db_utils.execQuery(`select distinct timestamp from dbo.first_game_scores where user_id=${user_id}`)
+    console.log(user_last_time)
+    if(user_last_time[0]){
+        user_last_time = user_last_time[user_last_time.length-1].timestamp;
+        user_last_time = user_last_time.getDate()+'-'+String(Number(user_last_time.getMonth())+1)+'-'+user_last_time.getFullYear();        
+        return user_last_time;
+    }
+    return undefined;
+}
+
+exports.getLastTime = getLastTime;
+exports.getUserScore = getUserScore;
 exports.setSecondGameResults = setSecondGameResults;
 exports.getOtherUserId = getOtherUserId;
 exports.setFirstGameResults = setFirstGameResults;
