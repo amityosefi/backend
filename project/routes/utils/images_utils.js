@@ -2,7 +2,7 @@ const db_utils = require("./db_utils");
 const admin_utils = require("../utils/admin_utils");
 
 
-const topic_names = ['Beach', 'Cities', 'Flowers', 'Forest', 'Mountain', 'Nature', 'Noam_s images', 'Universe'];
+const topic_names = ['Architecture and Structure', 'B_W', 'Beach and Sea', 'Cityscape', 'Fields', 'Flowers', 'Landscape', 'Universe'];
 var fs = require('fs');
 const { async } = require("regenerator-runtime");
 
