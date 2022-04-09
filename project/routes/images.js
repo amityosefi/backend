@@ -71,7 +71,7 @@ router.get('/checkCompress', async function(req, res) {
   try {
     
     
-    var folder = 'D:\\Daniel\\Project\\pics\\Images\\';
+    var folder = 'C:\\Images\\Images\\Images\\';
     var files = fs.readdirSync(folder);
 
     for(var i = 0 ; i < files.length ; i++)

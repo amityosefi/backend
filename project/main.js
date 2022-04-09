@@ -12,6 +12,15 @@ const app = express();
 app.use(bodyParser.json());
 
 
+// const https = require('https');
+// const fs = require('fs');
+
+// const options = {
+// 	key: fs.readFileSync('server.key'),
+// 	cert: fs.readFileSync('server.cert')
+// };
+
+
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
 app.use(
@@ -90,6 +99,13 @@ const server = app.listen(port, host, function (err) {
   }
   console.log('Listening at ' + host + ":" + port + '\n')
 })
+
+// const server = https.createServer(options, app);
+// server.listen(port, () => {
+//   console.log(`Server is running on port: ${port}`);
+// });
+
+
 
 process.on("SIGINT", function () {
   if (server) {
