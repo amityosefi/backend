@@ -1,4 +1,3 @@
-const { async } = require("regenerator-runtime");
 const db_utils = require("./db_utils");
 const admin_utils = require("../utils/admin_utils");
 

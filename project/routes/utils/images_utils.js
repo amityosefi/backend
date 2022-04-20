@@ -237,7 +237,7 @@ async function getOtherUserId(user_id){
 }
 
 async function getLeaders(){
-    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id WHERE score > 3 GROUP BY FullName ORDER BY TotalScore DESC;`);
+    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id GROUP BY FullName ORDER BY TotalScore DESC;`);
     return allUsers;
 }
 
