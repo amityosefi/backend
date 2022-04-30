@@ -52,7 +52,7 @@ router.get('/getImages', async function(req, res) {
 
     const totalAmountAllImages = admin_utils.getGlobalSettings().rankImages; // total amount to return to front end for ranking
     // totalAmountAllImages needs to change to 124 always!!!
-    const totalAmountEachCategory =  Math.floor(totalAmountAllImages / category); // total amount of each category except the last category
+    const totalAmountEachCategory =  Math.floor(totalAmountAllImages / 8); // total amount of each category except the last category
     const lastCategory = totalAmountAllImages - 7 * totalAmountEachCategory; // total amount of the last category to get the exact total amount 
 
     const ans = await images_utils.getAllPictures(totalAmountEachCategory, lastCategory);
