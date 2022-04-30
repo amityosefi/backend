@@ -50,11 +50,12 @@ var FileReader = require('filereader');
 router.get('/getImages', async function(req, res) {
   try {
 
-    const globalSettings = admin_utils.getGlobalSettings();
-    const category = 8;
-    const numbers =  Math.floor(globalSettings.rankImages / category);
+    const totalAmountAllImages = admin_utils.getGlobalSettings().rankImages; // total amount to return to front end for ranking
+    // totalAmountAllImages needs to change to 124 always!!!
+    const totalAmountEachCategory =  Math.floor(totalAmountAllImages / category); // total amount of each category except the last category
+    const lastCategory = totalAmountAllImages - 7 * totalAmountEachCategory; // total amount of the last category to get the exact total amount 
 
-    const ans = await images_utils.getAllPictures(category, numbers);
+    const ans = await images_utils.getAllPictures(totalAmountEachCategory, lastCategory);
     this.image_arr = ans;
     res.status(200).send(ans);
 
@@ -82,7 +83,7 @@ router.get('/checkCompress', async function(req, res) {
       for(var j = 0 ; j < images.length ; j++)
       {
         var path = folder+files[i]+"\\"+images[j];
-        await db_utils.execQuery(`insert into dbo.Images(Url,Nature,Day,Urban,Wildlife,Space,Sunset,Beach,Category) values ('${path}',0,0,0,0,0,0,0,'${files[i]}')`);
+        await db_utils.execQuery(`insert into dbo.newImages(Url, Category) values ('${path}','${files[i]}')`);
       }
     }
     // for(var i = 0 ; i < files.length ; i++)
