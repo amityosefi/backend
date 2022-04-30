@@ -25,7 +25,6 @@ async function review(text){
 async function getUsers(){
     const params = await db_utils.execQuery(`SElECT * FROM dbo.users`);
     const csv = new ObjectsToCsv(params);
-    await csv.toDisk('./users.csv');
     return csv;
 }
 
