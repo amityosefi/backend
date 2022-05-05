@@ -72,7 +72,7 @@ router.get('/checkCompress', async function(req, res) {
   try {
     
     
-    var folder = 'C:\\Images\\Images\\';
+    var folder = 'D:\\Daniel\\School\\7th semester\\Project\\Images\\';
     var files = fs.readdirSync(folder);
 
     for(var i = 0 ; i < files.length ; i++)
@@ -83,7 +83,7 @@ router.get('/checkCompress', async function(req, res) {
       for(var j = 0 ; j < images.length ; j++)
       {
         var path = folder+files[i]+"\\"+images[j];
-        await db_utils.execQuery(`insert into dbo.newImages(Url, Category) values ('${path}','${files[i]}')`);
+        await db_utils.execQuery(`insert into dbo.Images(Url, Category,Nature,Day,Urban,Wildlife,Space,Sunset,Beach) values ('${path}','${files[i]}',0,0,0,0,0,0,0)`);
       }
     }
     // for(var i = 0 ; i < files.length ; i++)
