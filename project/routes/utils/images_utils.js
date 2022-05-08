@@ -23,24 +23,40 @@ async function getAllPictures(totalAmountEachCategory, lastCategory) {
 
     let i = 0;
     let all_url_pictures = [];
+    let all_leftover_pictures = [];
     let query = '';
+    let leftover = 126 -  admin_utils.getGlobalSettings().rankImages;
+    let extra =  Math.floor(leftover/8);
+    let fin_extra = leftover - extra*7;
     const getShuffleCategories = shuffle(categories);
+    let a = 0, b = 0;
     for (let category in getShuffleCategories){
         if (i == 7){
-            query = `select TOP ${lastCategory} Id, Url from dbo.images where Category = '${getShuffleCategories[category]}' order by NEWID()`;
+            a = lastCategory;
+            b = lastCategory+fin_extra
+            query = `select TOP ${b} Id, Url from dbo.images where Category = '${getShuffleCategories[category]}' order by NEWID()`;
         } else{
-            query = `select TOP ${totalAmountEachCategory} Id, Url from dbo.images where Category = '${getShuffleCategories[category]}' order by NEWID()`;
+            a = totalAmountEachCategory;
+            b = totalAmountEachCategory+extra;
+            query = `select TOP ${b} Id, Url from dbo.images where Category = '${getShuffleCategories[category]}' order by NEWID()`;
         }
         const sql_query = await db_utils.execQuery(query);
+        let rate_imgs = sql_query.slice(0,a);
+        let leftovers = sql_query.slice(a,b);
         i = i + 1;
-        sql_query.forEach(function(elem) {
+        rate_imgs.forEach(function(elem) {
             dict = { id: elem.Id, src: fs.readFileSync(elem.Url, 'base64') }
             all_url_pictures.push(dict);
+        });
+        leftovers.forEach(function(elem) {
+            dict = { id: elem.Id }
+            all_leftover_pictures.push(dict);
         });
     }
 
     const mergedArrays = [].concat.apply([], all_url_pictures);
-    return { urls: mergedArrays };
+    const mergedLeftovers = [].concat.apply([], all_leftover_pictures);
+    return { urls: mergedArrays, extras: mergedLeftovers };
 
 }
 
@@ -121,6 +137,7 @@ async function fetchImages(pics,bins)
     let bl = bins.length;
     let unrated = []
     let rated = []
+    // console.log(pl,bl)
     if(pl > 0)
     {
         let str = "select Id, Url from dbo.Images where ";
