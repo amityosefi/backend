@@ -1,5 +1,4 @@
 const db_utils = require("./db_utils");
-const ObjectsToCsv = require('objects-to-csv');
 
 let globalSettings = {
     'rankImages' : 72,
@@ -24,8 +23,7 @@ async function review(text){
 }
 async function getUsers(){
     const params = await db_utils.execQuery(`SElECT * FROM dbo.users`);
-    const csv = new ObjectsToCsv(params);
-    return csv;
+    return params;
 }
 
 exports.getUsers = getUsers;
