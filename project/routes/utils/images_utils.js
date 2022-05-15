@@ -99,39 +99,45 @@ async function insertRatings(user_id, pict_ratings) {
     return "Insert fail";
 }
 
-async function getSecondGameImages(user_id) {
+async function getSecondGameImages(user_id) { //2*4 - best ///////////// 32-2*4 - worst
     let best_ratings = [];
     let worst_ratings = [];
     let counter = 10;
+
     const globalSettings = admin_utils.getGlobalSettings();
-    const firstGameImagesSelected  = globalSettings.firstGameImagesSelected;
-    const firstGameImages  = globalSettings.firstGameImages - firstGameImagesSelected;
+    const firstGameImagesSelected  = globalSettings.firstGameImagesSelected; //2
+    const firstGameImages  = globalSettings.firstGameImages - firstGameImagesSelected; // 6
 
     while (best_ratings.length < firstGameImagesSelected * 4) {
         let x = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         best_ratings = best_ratings.concat.apply(best_ratings, x);
         counter -= 1;
     }
-    if(best_ratings.length > firstGameImagesSelected)
+    if(best_ratings.length > firstGameImagesSelected * 4)
     {
-        best_ratings.slice(0,firstGameImagesSelected);
+        best_ratings.slice(0,firstGameImagesSelected * 4);
     }
+
     counter = 0;
     while (worst_ratings.length < firstGameImages * 4) {
         let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
         worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
         counter += 1;
     }
-    if(best_ratings.length > firstGameImages)
+
+    if(worst_ratings.length > firstGameImages * 4)
     {
-        best_ratings.slice(0,firstGameImages);
+        worst_ratings.slice(0,firstGameImages * 4);
     }
+
 
     best_ratings = await getRandomImages(best_ratings, firstGameImagesSelected * 4);
     worst_ratings = await getRandomImages(worst_ratings, firstGameImages * 4);
 
     best_ratings = await getUrlImages(best_ratings);
     worst_ratings = await getUrlImages(worst_ratings);
+    
+
 
     return { best: best_ratings, worst: worst_ratings };
 }
@@ -146,6 +152,7 @@ async function getRandomImages(arr_ratings, count) {
             arr_res.push(arr_ratings[rand]);
         arr_random.push(rand);
     }
+
     return arr_res;
 }
 async function fetchImages(pics,bins)
@@ -216,6 +223,8 @@ async function getUrlImages(arr) {
             id: arr[i].Pic_id, 
             src:  tmp
         };
+        
+        // console.log(arr[i].Pic_id)
         res.push(pic);
     }
     return res;
@@ -223,12 +232,7 @@ async function getUrlImages(arr) {
 
 async function setFirstGameResults(user_id, score, result, allImages){
     const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
-    console.log("user_id",user_id);
-    console.log("score",score);
-    console.log("result",result);
-    console.log("allImages",allImages);
-    console.log("firstGameImages",firstGameImages);
-    console.log("date",new Date().toLocaleDateString());
+
     const d = new Date();
     const dt = `${d.getFullYear()}-${d.getUTCMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()}`;
 
