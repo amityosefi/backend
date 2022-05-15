@@ -54,7 +54,7 @@ async function getAllPictures(totalAmountEachCategory, lastCategory) {
         });
     }
     let merged = [].concat.apply([], all_url_pictures);
-    const mergedArrays = shuffle(merge)
+    const mergedArrays = shuffle(merged);
     let all_merged = [].concat.apply([], all_leftover_pictures);
     const mergedLeftovers = shuffle(all_merged);
     return { urls: mergedArrays, extras: mergedLeftovers };
