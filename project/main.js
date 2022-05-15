@@ -15,10 +15,10 @@ app.use(bodyParser.json());
 const https = require('https');
 const fs = require('fs');
 
-// const options = {
-// 	key: fs.readFileSync('privkey1.pem'),
-// 	cert: fs.readFileSync('fullchain1.pem')
-// };
+const options = {
+	key: fs.readFileSync('privkey1.pem'),
+	cert: fs.readFileSync('fullchain1.pem')
+};
 
 
 app.use(logger("dev")); //logger
@@ -92,18 +92,18 @@ app.use("/admin", admin);
 app.use(auth);
 
 
-const server = app.listen(port, host, function (err) {
- if (err) {
-   console.log(err)
-   return
- }
- console.log('Listening at ' + host + ":" + port + '\n')
-})
+// const server = app.listen(port, host, function (err) {
+//  if (err) {
+//    console.log(err)
+//    return
+//  }
+//  console.log('Listening at ' + host + ":" + port + '\n')
+// })
 
-// const server = https.createServer(options, app);
-// server.listen(port, host, () => {
-//    console.log(`Server is running on port: ${port}`);
-// });
+const server = https.createServer(options, app);
+server.listen(port, host, () => {
+   console.log(`Server is running on port: ${port}`);
+});
 
 
 
