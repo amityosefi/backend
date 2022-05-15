@@ -53,13 +53,30 @@ async function getAllPictures(totalAmountEachCategory, lastCategory) {
             all_leftover_pictures.push(dict);
         });
     }
-
-    const mergedArrays = [].concat.apply([], all_url_pictures);
-    const mergedLeftovers = [].concat.apply([], all_leftover_pictures);
+    let merged = [].concat.apply([], all_url_pictures);
+    const mergedArrays = shuffle(merge)
+    let all_merged = [].concat.apply([], all_leftover_pictures);
+    const mergedLeftovers = shuffle(all_merged);
     return { urls: mergedArrays, extras: mergedLeftovers };
 
 }
-
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }
 async function getRate(user_id){
     const sql_query = await db_utils.execQuery(`select count(*) as a from dbo.users_ratings where User_id=${user_id}`);
     if (sql_query && sql_query[0].a >= 72){
