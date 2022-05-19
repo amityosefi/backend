@@ -66,7 +66,7 @@ router.post('/login', async function(req, res) {
       const user_score = await images_utils.getUserScore(req.session.user_id);
       const user_last_time = await images_utils.getLastTime(ans[1]);
       const finish_rate = await images_utils.getRate(ans[1]);
-      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], FullName: ans[3], globalSettings: globalSettings, user_score:user_score, last_time: user_last_time, numRanked: finish_rate});
+      res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], FullName: ans[3], globalSettings: globalSettings, user_score:user_score, last_time: user_last_time, numRanked: finish_rate, is_submitted:ans[4],is_done:ans[5]});
     }
     else
       res.status(401).send({message: "There is no Email or password"});
