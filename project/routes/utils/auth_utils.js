@@ -28,7 +28,7 @@ async function insertNewUser(Email, Password, Fullname, Gender, Age){
         let params = await db_utils.execQuery(`select Id,IsAdmin,FullName,Email from dbo.Users where Email='${Email}'`);
         const globalSettings = await admin_utils.getGlobalSettings();
         params = params[0];
-        return {message: "User was added successfully", Id: params.Id, IsAdmin: params.IsAdmin, FullName: params.FullName, globalSettings: globalSettings};
+        return {message: "User was added successfully", Id: params.Id, IsAdmin: params.IsAdmin, FullName: params.FullName, globalSettings: globalSettings,is_submitted:params.is_submitted,is_done:params.is_done};
     }
     else
         return {message: "There was a problem adding this user"};
