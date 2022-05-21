@@ -1,5 +1,6 @@
 const db_utils = require("./db_utils");
 const admin_utils = require("../utils/admin_utils");
+const { async } = require("regenerator-runtime");
 
 
 async function checkEmailExistence(Email){
@@ -53,8 +54,16 @@ async function getFullname(email){
     else
         return undefined;
 }
+async function submitRate(user_id){
+    await db_utils.execQuery(`UPDATE dbo.Users SET is_submitted = 1 WHERE Id = ${user_id};`);
+}
+async function doneRate(user_id){
+    await db_utils.execQuery(`UPDATE dbo.Users SET is_done = 1 WHERE Id = ${user_id};`);
+}
 
 
+exports.doneRate = doneRate;
+exports.submitRate = submitRate;
 exports.checkEmailExistence = checkEmailExistence;
 exports.checkUserPassword = checkUserPassword;
 exports.insertNewUser = insertNewUser;
