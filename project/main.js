@@ -1,6 +1,6 @@
 const db_utils = require('./routes/utils/db_utils');
 const axios = require("axios");
-require("dotenv").config({path:'.env'});
+// require("dotenv").config({path:'.env'});
 const express = require('express');
 const bodyParser = require('body-parser');
 var path = require("path");
@@ -16,7 +16,7 @@ const https = require('https');
 const fs = require('fs');
 
 const options = {
-	key: fs.readFileSync('privkey1.pem'),
+	key: fs.readFileSync('privkey1.key'),
 	cert: fs.readFileSync('fullchain1.pem')
 };
 
@@ -43,17 +43,19 @@ app.use(express.static(path.join(__dirname, "public"))); //To serve static files
 app.use(express.static("dist"));
 
 
-
-
-app.get('/', async function(req, res) {
-  res.status(200).send("server is running");
+app.get('/api', (req, res) => {
+  res.sendFile(__dirname + "/index.html");
 });
 
-app.use('/', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next()
-});
+// app.get('/', async function(req, res) {
+//   res.status(200).send("server is running");
+// });
+
+// app.use('/', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "https://coil2.cs.bgu.ac.il");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next()
+// });
 
 const corsConfig = {
   origin: true,
@@ -65,7 +67,7 @@ app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
 const port = '443';
-const host = '0.0.0.0'
+const host = '132.73.84.32' //0.0.0.0 - before
 
 const auth = require("./routes/auth");
 const images = require("./routes/images");
@@ -91,6 +93,13 @@ app.use("/images", images);
 app.use("/admin", admin);
 app.use(auth);
 
+app.get("/alive", (req, res) => res.send("I'm alive"));
+
+app.use(function(err, req, res, next){
+  console.error(err);
+  res.status(err.status|| 500).send(err.message);
+});
+
 
 // const server = app.listen(port, host, function (err) {
 //  if (err) {
@@ -102,18 +111,18 @@ app.use(auth);
 
 const server = https.createServer(options, app);
 server.listen(port, host, () => {
-   console.log(`Server is running on port: ${port}`);
+   console.log(`Server is running on https://%s:%s`, host, port);
 });
 
 
 
-process.on("SIGINT", function () {
-  if (server) {
-    server.close(() => console.log("server closed"));
-  }
-  process.exit();
-});
+// process.on("SIGINT", function () {
+//   if (server) {
+//     server.close(() => console.log("server closed"));
+//   }
+//   process.exit();
+// });
 
 
-module.exports = app
+// module.exports = app
 
