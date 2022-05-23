@@ -152,11 +152,63 @@ router.get('/checkCompress', async function(req, res) {
   }
 });
 
+router.post('/is_done', async function(req, res) {
+  try {
+    const is_done = req.body.is_done;
+    
+    if (is_done){
+      await auth_utils.doneRate(req.body.user_id);
+      res.status(200).send({message: "changed successfully"});
+    } else{
+      res.status(200).send({message: "failed"});
+
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+router.post('/save_pics', async function(req, res) {
+  
+  try {
+    const user_id = req.body.user_id;
+    let ranked = req.body.ranked;
+    let unranked = req.body.unranked;
+    let extras = req.body.extras;
+    if(typeof ranked === 'string')
+    {
+      ranked = JSON.parse(ranked);
+    }
+    if(typeof unranked === 'string')
+    {
+      unranked = JSON.parse(unranked);
+    }
+    if(typeof extras === 'string')
+    {
+      extras = JSON.parse(extras);
+    }
+    console.log("user",user_id);
+    console.log("ranked",ranked);
+    console.log("unranked",unranked);
+    console.log("extras",extras);
+    await images_utils.saveAllPics(ranked,unranked,extras,user_id);
+    res.status(200).send({message: "saved successfully"});
+
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
+
 router.post('/submitRatings', async function(req, res) {
   try {
     const user_id = req.body.id;
-
     const pict_ratings = req.body.data_ratings;
+    
+    await auth_utils.submitRate(user_id);
+
     const ans = await images_utils.insertRatings(user_id, pict_ratings);
     res.status(200).send(ans);
 } catch (err) {
@@ -211,6 +263,7 @@ router.post('/fetchSpecificImages', async function(req, res){
   try {
     const pics = req.body.pics;
     const bins = req.body.bins;
+    
     // console.log("pics",pics)
     // console.log("bins",bins)
     let ans = await images_utils.fetchImnages(pics,bins);

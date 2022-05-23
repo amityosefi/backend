@@ -281,6 +281,48 @@ async function getLastTime(user_id){
     return undefined;
 }
 
+async function saveAllPics(ranked,unranked,extras,user_id)
+{
+    await db_utils.execQuery(`delete from dbo.Saved_Ranked where User_id = ${user_id}`);
+    await db_utils.execQuery(`delete from dbo.Saved_Unranked where User_id = ${user_id}`);
+    await db_utils.execQuery(`delete from dbo.Saved_Extras where User_id = ${user_id}`);
+    if(ranked)
+    {
+        for(var img in ranked)
+        {
+            let x = ranked[img];
+            await db_utils.execQuery(`insert into dbo.Saved_Ranked (User_id,Pic_id,Rating) VALUES (${user_id},${x.picId},${x.rating})`);
+        }
+    }
+    if(unranked)
+    {
+        for(var img in unranked)
+        {
+            let x = unranked[img];
+            await db_utils.execQuery(`insert into dbo.Saved_Unranked (User_id,Pic_id) VALUES (${user_id},${x})`);
+        }
+    }
+    if(extras)
+    {
+        for(var img in extras)
+        {
+            let x = extras[img];
+            await db_utils.execQuery(`insert into dbo.Saved_Extras (User_id,Pic_id) VALUES (${user_id},${x.id})`);
+        }
+    }
+    
+    
+    
+    // if(ranked)
+    //     ranked.forEach((x) => {await db_utils.execQuery(`insert into dbo.Saved_Ranked (User_id,Pic_id,Rating) VALUES (${user_id},${x.id},${x.rating})`)});
+    // if(unranked)
+    //     unranked.forEach((x) => {await db_utils.execQuery(`insert into dbo.Saved_Unranked (User_id,Pic_id) VALUES (${user_id},${x.id})`)});
+    // if(extras)
+    //     unranked.forEach((x) => {await db_utils.execQuery(`insert into dbo.Saved_Extras (User_id,Pic_id) VALUES (${user_id},${x.id})`)});
+
+}
+
+exports.saveAllPics = saveAllPics;
 exports.getLastTime = getLastTime;
 exports.getUserScore = getUserScore;
 exports.setSecondGameResults = setSecondGameResults;
