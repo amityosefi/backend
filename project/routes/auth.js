@@ -33,7 +33,7 @@ router.post("/register", async (req, res, next) => {
     //   throw { status: 409, message: "Email taken" };
 
 
-    if(!req.body.Email || !req.body.Password || !req.body.Fullname || !req.body.Gender || !req.body.Age){
+    if(!req.body.Email || !req.body.Fullname || !req.body.Gender || !req.body.Age){
       res.status(400).send({message: "Wrong inputs"});
     }
     
@@ -42,9 +42,9 @@ router.post("/register", async (req, res, next) => {
       res.status(200).send({message: "Email is already exists"});
     else{
       // hash the password
-      let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
-      req.body.Password = hash_password;
-      const ans = await auth_utils.insertNewUser(req.body.Email, req.body.Password, req.body.Fullname, req.body.Gender, req.body.Age);
+      // let hash_password = bcrypt.hashSync(req.body.Password, parseInt(process.env.bcrypt_saltRounds));
+      // req.body.Password = hash_password;
+      const ans = await auth_utils.insertNewUser(req.body.Email, req.body.Fullname, req.body.Gender, req.body.Age);
       res.status(201).send(ans);
     }
   } catch (error) {
@@ -55,13 +55,13 @@ router.post("/register", async (req, res, next) => {
 router.post('/login', async function(req, res) {
   try {
     const Email = req.body.Email;
-    let Password = req.body.Password;
-    if (!Email || !Password) {
+    // let Password = req.body.Password;
+    if (!Email) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
     const ans = await auth_utils.checkUserPassword(Email);
     console.log(ans);
-    if(ans && ans[0] && bcrypt.compareSync(req.body.Password, ans[0])){
+    if(ans && ans[0] ){
       req.session.user_id = ans[1];
       const globalSettings = await admin_utils.getGlobalSettings();
       const user_score = await images_utils.getUserScore(req.session.user_id);
@@ -70,7 +70,7 @@ router.post('/login', async function(req, res) {
       res.status(200).send({Id:req.session.user_id, IsAdmin: ans[2], FullName: ans[3], globalSettings: globalSettings, user_score:user_score, last_time: user_last_time, numRanked: finish_rate, is_submitted:ans[4],is_done:ans[5],ranked:ans[6],unranked:ans[7],extras:ans[8]});
     }
     else
-      res.status(401).send({message: "There is no Email or password"});
+      res.status(401).send({message: "There is no Email"});
   } catch (err) {
     console.log(err);
     res.status(500).send({message: new Error(err)});

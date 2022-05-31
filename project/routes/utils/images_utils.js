@@ -102,38 +102,37 @@ async function insertRatings(user_id, pict_ratings) {
 async function getSecondGameImages(user_id) { //2*4 - best ///////////// 32-2*4 - worst
     let best_ratings = [];
     let worst_ratings = [];
-    let counter = 10;
 
     const globalSettings = admin_utils.getGlobalSettings();
     const firstGameImagesSelected  = globalSettings.firstGameImagesSelected; //2
     const firstGameImages  = globalSettings.firstGameImages - firstGameImagesSelected; // 6
-
-    while (best_ratings.length < firstGameImagesSelected * 4) {
-        let x = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
-        best_ratings = best_ratings.concat.apply(best_ratings, x);
-        counter -= 1;
-    }
-    if(best_ratings.length > firstGameImagesSelected * 4)
+    const numRanked = globalSettings.rankImages;
+    const good = numRanked*0.2;
+    const bad = numRanked*0.6;
+    const picByRateArray = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' Order by rating Asc`);
+    let IDArray = ([]).concat.apply(picByRateArray);
+    console.log(IDArray);
+    while(worst_ratings.length <= bad)
     {
-        best_ratings.slice(0,firstGameImagesSelected * 4);
+        wl = worst_ratings.length
+        bl = best_ratings.length
+        idl = IDArray.length;
+        worst_ratings.push(IDArray[wl]);
+        if(bl <= good)
+        {
+            best_ratings.push(IDArray[idl-1-wl])
+        }
+
     }
-
-    counter = 0;
-    while (worst_ratings.length < firstGameImages * 4) {
-        let y = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' and rating = ${counter}`);
-        worst_ratings = worst_ratings.concat.apply(worst_ratings, y);
-        counter += 1;
-    }
-
-    if(worst_ratings.length > firstGameImages * 4)
-    {
-        worst_ratings.slice(0,firstGameImages * 4);
-    }
-
-
-    best_ratings = await getRandomImages(best_ratings, firstGameImagesSelected * 4);
-    worst_ratings = await getRandomImages(worst_ratings, firstGameImages * 4);
-
+    best_ratings = shuffle(best_ratings);
+    worst_ratings = shuffle(worst_ratings);
+    best_ratings = best_ratings.slice(0,firstGameImagesSelected*4);
+    console.log("best",best_ratings);
+    worst_ratings = worst_ratings.slice(0,firstGameImages*4);
+    console.log("worst",worst_ratings);
+    console.log(firstGameImagesSelected)
+    console.log(firstGameImages);
+    
     best_ratings = await getUrlImages(best_ratings);
     worst_ratings = await getUrlImages(worst_ratings);
     
@@ -142,23 +141,18 @@ async function getSecondGameImages(user_id) { //2*4 - best ///////////// 32-2*4 
     return { best: best_ratings, worst: worst_ratings };
 }
 
-async function getRandomImages(arr_ratings, count) {
-    const len = arr_ratings.length;
-    const arr_random = [];
-    const arr_res = [];
-    while (arr_res.length < count) {
-        let rand = Math.floor(Math.random() * len);
-        if (!arr_random.includes(rand))
-            arr_res.push(arr_ratings[rand]);
-        arr_random.push(rand);
-    }
 
-    return arr_res;
-}
 async function fetchImages(pics,bins)
 {
     let pl = pics.length;
     let bl = bins.length;
+    let rate_dict = {};
+    for(var i in bins)
+    {
+        let key = bins[i].picId;
+        let value = bins[i].rating;
+        rate_dict[key] = value;
+    }
     let unrated = []
     let rated = []
     // console.log(pl,bl)
@@ -203,8 +197,8 @@ async function fetchImages(pics,bins)
         let img = rated[i];
         let pic_id = img.Id;
         let url = fs.readFileSync(img.Url , 'base64');
-        let _rating = bins[i].rating
-        rated_arr.push({id:pic_id,src:url,rating:_rating})
+        let _rating = rate_dict[pic_id];
+        rated_arr.push({id:pic_id,src:url,rating:_rating});
     }
     let arr = []
     
@@ -251,12 +245,7 @@ async function getOtherUserId(user_id){
     return random_userId;
 }
 
-async function getOtherUserId(user_id){
-    const allUsers = await db_utils.execQuery(`SELECT DISTINCT User_id from dbo.users_ratings WHERE User_id != ${user_id}`);
-    const users = allUsers.map(x => x.User_id)
-    const random_userId = users[Math.floor(Math.random()*users.length)];
-    return random_userId;
-}
+
 
 async function getLeaders(){
     const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.first_game_scores ON dbo.users.Id = dbo.first_game_scores.user_id GROUP BY FullName ORDER BY TotalScore DESC;`);
@@ -332,5 +321,5 @@ exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
 exports.getSecondGameImages = getSecondGameImages;
 exports.getLeaders = getLeaders;
-exports.fetchImnages = fetchImages;
+exports.fetchImages = fetchImages;
 exports.getRate = getRate;
