@@ -12,8 +12,10 @@ async function checkEmailExistence(Email){
 async function checkUserPassword(Email){
     const query = `Select Id,IsAdmin,FullName,is_submitted,is_done FROM dbo.users WHERE Email = '${Email}'`;
     const params = await db_utils.execQuery(query);
-    console.log("params",params);
-    const user_id = params[0].Id
+    if(!params[0]){
+        return undefined;
+    }
+    const user_id = params[0].Id;
     const ranked = await db_utils.execQuery(`select * from dbo.Saved_Ranked where User_id = ${user_id}`)
     const unranked = await db_utils.execQuery(`select * from dbo.Saved_Unranked where User_id = ${user_id}`)
     const extras = await db_utils.execQuery(`select * from dbo.Saved_Extras where User_id = ${user_id}`)
@@ -40,7 +42,6 @@ async function checkUserPassword(Email){
     }
 
 async function insertNewUser(Email, Fullname, Gender, Age){
-    let a = 'a'
     const query = `INSERT INTO dbo.users (Email, FullName, Gender, Age, IsAdmin) VALUES ('${Email}', '${Fullname}', '${Gender}','${Age}', 0)`;
     const beforeInsert = await db_utils.execQuery(`SElECT count(*) as 'num' FROM dbo.users`);
     await db_utils.execQuery(query);
