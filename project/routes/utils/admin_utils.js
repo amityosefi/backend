@@ -1,3 +1,4 @@
+const { async } = require("regenerator-runtime");
 const db_utils = require("./db_utils");
 
 let globalSettings = {
@@ -21,11 +22,16 @@ async function review(text){
     await db_utils.execQuery(query);
     return {ans: "The text insert to db"};
 }
-async function getUsers(){
-    const params = await db_utils.execQuery(`SElECT * FROM dbo.users`);
+// async function getUsers(){
+//     const params = await db_utils.execQuery(`SElECT * FROM dbo.users`);
+//     return params;
+// }
+async function getUsers(){ // getFirstGame
+    const params = await db_utils.execQuery(`SElECT score FROM dbo.first_game_scores where score <= 8`);
     return params;
 }
 
+// exports.getFirstGame = getFirstGame;
 exports.getUsers = getUsers;
 exports.review = review;
 exports.getGlobalSettings = getGlobalSettings;
