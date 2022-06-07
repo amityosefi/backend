@@ -266,7 +266,7 @@ router.post('/fetchSpecificImages', async function(req, res){
     
     // console.log("pics",pics)
     // console.log("bins",bins)
-    let ans = await images_utils.fetchImnages(pics,bins);
+    let ans = await images_utils.fetchImages(pics,bins);
     
     res.status(200).send(ans);
 
