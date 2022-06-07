@@ -15,10 +15,10 @@ app.use(bodyParser.json());
 const https = require('https');
 const fs = require('fs');
 
-const options = {
-	key: fs.readFileSync('privkey1.key'),
-	cert: fs.readFileSync('fullchain1.pem')
-};
+// const options = {
+// 	key: fs.readFileSync('privkey1.key'),
+// 	cert: fs.readFileSync('fullchain1.pem')
+// };
 
 
 app.use(logger("dev")); //logger
