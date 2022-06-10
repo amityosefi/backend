@@ -109,7 +109,7 @@ async function getSecondGameImages(user_id) { //2*4 - best ///////////// 32-2*4 
     const numRanked = globalSettings.rankImages;
     const good = numRanked*0.2;
     const bad = numRanked*0.6;
-    const picByRateArray = await db_utils.execQuery(`select Pic_id from dbo.users_ratings where User_id = '${user_id}' Order by rating Asc`);
+    const picByRateArray = await db_utils.execQuery(`select DISTINCT Pic_id from dbo.users_ratings where User_id = '${user_id}' Order by rating Asc`);
     let IDArray = ([]).concat.apply(picByRateArray);
     console.log(IDArray);
     while(worst_ratings.length <= bad)

@@ -62,4 +62,14 @@ router.post('/users', async function (req, res) {
     }
 });
 
+router.post('/firstGame', async function (req, res) {
+    try {
+        const ans = await admin_utils.getFirstGame();
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
+
 module.exports = router;
