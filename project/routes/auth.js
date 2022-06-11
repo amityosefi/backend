@@ -60,7 +60,6 @@ router.post('/login', async function(req, res) {
       res.status(400).send({ message: 'Wrong inputs' });
     }
     const ans = await auth_utils.checkUserPassword(Email);
-    console.log("anssss: ", ans);
     if(ans && ans[0] ){
       req.session.user_id = ans[0];
       const globalSettings = await admin_utils.getGlobalSettings();
