@@ -62,7 +62,37 @@ router.post('/users', async function (req, res) {
     }
 });
 
-router.post('/users', async function (req, res) {
+
+router.post('/ranksbyimage', async function (req, res) {
+    try {
+        const ans = await admin_utils.getRanks();
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
+
+router.post('/ranksbyuser', async function (req, res) {
+    try {
+        const ans = await admin_utils.getRanksUsers();
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
+
+router.post('/ranksperuser', async function (req, res) {
+    try {
+        const ans = await admin_utils.getRankPerUser();
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
+router.post('/firstGame', async function (req, res) {
     try {
         const ans = await admin_utils.getUsers();
         res.status(200).send(ans);
