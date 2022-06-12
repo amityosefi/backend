@@ -72,4 +72,25 @@ router.post('/firstGame', async function (req, res) {
     }
 });
 
+
+router.post('/firstGameData', async function (req, res) {
+    try {
+        const ans = await admin_utils.getFirstGameData();
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
+
+router.post('/SecondGameData', async function (req, res) {
+    try {
+        const ans = await admin_utils.getSecondGameData();
+        res.status(200).send(ans);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: new Error(err) });
+    }
+});
+
 module.exports = router;

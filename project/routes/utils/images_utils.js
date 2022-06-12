@@ -234,8 +234,12 @@ async function setFirstGameResults(user_id, score, result, allImages){
 }
 
 async function setSecondGameResults(user_id, other, score, result, allImages){
-    const firstGameImages = admin_utils.getGlobalSettings().firstGameImages;
-    db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${other}', '${score}', '${firstGameImages}', '${String(result)}', '${String(allImages)}', '${String(new Date().toLocaleDateString())}');`)
+    const secondGameImages = admin_utils.getGlobalSettings().firstGameImages;
+
+    const d = new Date();
+    const dt = `${d.getFullYear()}-${d.getUTCMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()}`;
+
+    db_utils.execQuery(`INSERT INTO dbo.second_game_scores (user_id, other_id, score, max_score, goodImages, allImages, timestamp) VALUES ('${user_id}', '${other}', '${score}', '${secondGameImages}', '${String(result)}', '${String(allImages)}', '${dt}');`)
 }
 
 async function getOtherUserId(user_id){
