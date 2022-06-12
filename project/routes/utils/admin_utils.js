@@ -75,6 +75,26 @@ async function getRanksUsers()
     
 
 }
+
+async function getRankPerUser()
+{
+    const params = await db_utils.execQuery('select Email,rating,ranks from (select User_id,rating,count(rating) as ranks from dbo.users_ratings group by User_id,rating) as s inner join dbo.Users as a on s.User_id = a.Id');
+    console.log(params)
+    dict = {}
+    for(var ind in params)
+    {
+        let param = params[ind];
+        let key = param.Email;
+        let rating = param.rating;
+        let ranks = param.ranks;
+        if(!(key in dict))
+        {
+            dict[key] = [];
+        }
+        dict[key].push([rating,ranks]);
+    }
+    return dict;
+}
 // exports.getFirstGame = getFirstGame;
 exports.getUsers = getUsers;
 exports.review = review;
@@ -82,3 +102,4 @@ exports.getGlobalSettings = getGlobalSettings;
 exports.changeSettings = changeSettings;
 exports.getRanks = getRanks;
 exports.getRanksUsers = getRanksUsers;
+exports.getRankPerUser = getRankPerUser;
