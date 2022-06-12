@@ -6,3 +6,5 @@ dist
 privkey1.pem
 fullchain1.pem
 project/main.js
+project/main.js
+project/routes/utils/db_utils.js
