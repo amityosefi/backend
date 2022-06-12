@@ -264,7 +264,7 @@ async function getUserScore(user_id){
 }
 
 async function getLastTime(user_id){
-    let user_last_time = await db_utils.execQuery(`select distinct timestamp from dbo.first_game_scores where user_id=${user_id}`)
+    let user_last_time = await db_utils.execQuery(`select timestamp from dbo.first_game_scores where user_id=${user_id}`)
     if(user_last_time[0]){
         user_last_time = user_last_time[user_last_time.length-1].timestamp;
         let last_time = new Date(user_last_time)
