@@ -106,4 +106,14 @@ const server = app.listen(port, host, function (err) {
 // });
 
 
-// module.exports = app
+
+process.on("SIGINT", function () {
+  if (server) {
+    server.close(() => console.log("server closed"));
+  }
+  process.exit();
+});
+
+
+module.exports = app
+
