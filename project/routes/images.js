@@ -250,6 +250,8 @@ router.post('/submitFirstGame', async function(req, res){
     const result = req.body.result;
     const allImages = req.body.allImages;
 
+    
+
     await images_utils.setFirstGameResults(user_id, score, result, allImages);
     res.status(200).send({message: "The results saved successfully"});
 
