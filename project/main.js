@@ -124,14 +124,4 @@ server.listen(port, host, () => {
 // });
 
 
-
-process.on("SIGINT", function () {
-  if (server) {
-    server.close(() => console.log("server closed"));
-  }
-  process.exit();
-});
-
-
-module.exports = app
-
+// module.exports = app
