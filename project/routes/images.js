@@ -334,5 +334,17 @@ router.get('/getLeaders', async function(req, res) {
 });
 
 
+router.get('/getLeadersTwo', async function(req, res) {
+
+  try {
+    const leaders = await images_utils.getLeadersTwo();
+    res.status(200).send(leaders);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({message: new Error(err)});
+  }
+});
+
 
 module.exports = router;

@@ -256,6 +256,11 @@ async function getLeaders(){
     return allUsers;
 }
 
+async function getLeadersTwo(){
+    const allUsers = await db_utils.execQuery(`SELECT FullName, SUM([score]) AS TotalScore from dbo.users INNER JOIN dbo.second_game_scores ON dbo.users.Id = dbo.second_game_scores.user_id GROUP BY FullName ORDER BY TotalScore DESC;`);
+    return allUsers;
+}
+
 async function getUserScore(user_id){
     const user_score = await db_utils.execQuery(`select SUM(score) as score from dbo.first_game_scores where user_id=${user_id} GROUP BY user_id`)
     if(user_score[0])
@@ -325,5 +330,6 @@ exports.insertRatings = insertRatings;
 exports.getAllPictures = getAllPictures;
 exports.getSecondGameImages = getSecondGameImages;
 exports.getLeaders = getLeaders;
+exports.getLeadersTwo = getLeadersTwo;
 exports.fetchImages = fetchImages;
 exports.getRate = getRate;
